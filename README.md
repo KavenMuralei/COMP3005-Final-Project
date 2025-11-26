@@ -7,3 +7,11 @@ Ansh Sharma, Kaven Muraleitharan, Dean Sabbah
 
 ## Repository:
 https://github.com/KavenMuralei/COMP3005-Final-Project
+
+## Entity List
+User
+-Members
+-Trainers
+-Admins
+
+
