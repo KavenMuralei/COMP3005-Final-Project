@@ -1,48 +1,48 @@
-
-CREATE TABLE Member (
-    member_id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS "User" (
+    user_id SERIAL PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
-    contact_email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    user_password VARCHAR(255) NOT NULL,
+    user_type INT,
+    CHECK (user_type BETWEEN 0 AND 2)
+);
+
+CREATE TABLE IF NOT EXISTS Member (
+    member_id INT PRIMARY KEY REFERENCES "User"(user_id),
     phone_number VARCHAR(20),
     date_of_birth DATE,
     gender VARCHAR(255)
 );
 
-CREATE TABLE Trainer (
-    trainer_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS Trainer (
+    trainer_id INT PRIMARY KEY REFERENCES "User"(user_id)
 );
 
-CREATE TABLE Admin (
-    admin_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    contact_email VARCHAR(255) UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS Admin (
+    admin_id INT PRIMARY KEY REFERENCES "User"(user_id)
 );
 
-CREATE TABLE Room (
+CREATE TABLE IF NOT EXISTS Room (
     room_id SERIAL PRIMARY KEY,
     room_name VARCHAR(255) UNIQUE NOT NULL,
     capacity INT CHECK (capacity > 0),
     location_details VARCHAR(255)
 );
 
-CREATE TABLE Equipment (
+CREATE TABLE IF NOT EXISTS Equipment (
     equipment_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL DEFAULT 'OK'
 );
 
-CREATE TABLE Class (
+CREATE TABLE IF NOT EXISTS Class (
     class_id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
-    description TEXT,
+    description TEXT
 );
 
-CREATE TABLE ClassSession (
+CREATE TABLE IF NOT EXISTS ClassSession (
     session_id SERIAL PRIMARY KEY,
     class_type_id INT REFERENCES Class(class_id) NOT NULL,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE ClassSession (
     UNIQUE (room_id, start_time)
 );
 
-CREATE TABLE ClassGroup(
+CREATE TABLE IF NOT EXISTS ClassGroup(
     group_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
     session_id INT REFERENCES ClassSession(session_id) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE ClassGroup(
     UNIQUE (member_id, session_id)
 );
 
-CREATE TABLE PTSession (
+CREATE TABLE IF NOT EXISTS PTSession (
     pt_session_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE PTSession (
     UNIQUE (trainer_id, start_time)
 );
 
-CREATE TABLE HealthMetric (
+CREATE TABLE IF NOT EXISTS HealthMetric (
     metric_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
     time TIMESTAMP NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE HealthMetric (
     bpm INT
 );
 
-CREATE TABLE FitnessGoal(
+CREATE TABLE IF NOT EXISTS FitnessGoal(
     goal_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
     goal_type VARCHAR(255) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE FitnessGoal(
     status VARCHAR(255) NOT NULL DEFAULT 'ongoing'
 );
 
-CREATE TABLE TrainerAvailability (
+CREATE TABLE IF NOT EXISTS TrainerAvailability (
     availability_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
     start_day DATE NOT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE TrainerAvailability (
     end_time TIME NOT NULL
 );
 
-CREATE TABLE Maintenance (
+CREATE TABLE IF NOT EXISTS Maintenance (
     maintenance_id SERIAL PRIMARY KEY,
     equipment_id INT REFERENCES Equipment(equipment_id) NOT NULL,
     room_id INT REFERENCES Room(room_id),
