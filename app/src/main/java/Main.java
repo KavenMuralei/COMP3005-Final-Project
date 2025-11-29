@@ -92,6 +92,7 @@ public class Main {
                     valid = true;
                 }
                 catch (Exception e) {
+                    System.out.println("Date of birth format invalid");
                     valid = false;
                 }
             }
@@ -177,7 +178,6 @@ public class Main {
                 }
 
                 SessionManager.setEmail(email);
-                SessionManager.setPassword(password);
                 SessionManager.setUserId(rs.getInt(rs.findColumn("user_id")));
 
                 System.out.println("Hello " +rs.getString(rs.findColumn("first_name")) + "!");
