@@ -129,7 +129,7 @@ public class Main {
             ps.setDate(6, java.sql.Date.valueOf(dob));
             ps.setString(7, gender);
 
-            try{
+            try {
                 ps.executeUpdate();
                 System.out.println("New member added successfully");
                 return;
@@ -160,7 +160,9 @@ public class Main {
         String query = """
                 SELECT 
                     email, 
-                    user_password, 
+                    user_password,
+                    user_id, 
+                    first_name,  
                     user_type 
                 FROM \"User\" 
                 WHERE email = ? AND user_password = ?
@@ -175,6 +177,13 @@ public class Main {
                     logIn(connection, input);
                     return; 
                 }
+
+                SessionManager.setEmail(email);
+                SessionManager.setPassword(password);
+                SessionManager.setUserId(rs.getInt(rs.findColumn("user_id")));
+
+                System.out.println("Hello " +rs.getString(rs.findColumn("first_name")) + "!");
+
                 switch (rs.getInt("user_type")) {
                     case 0 -> memberLoop(connection, input);
                     case 1 -> trainerLoop(connection, input);
