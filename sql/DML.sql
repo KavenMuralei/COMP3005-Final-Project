@@ -10,3 +10,11 @@
 -- INSERT INTO Admins (admin_id) VALUES (3);
 
 -- SELECT * FROM Users;
+
+WITH new_user AS (
+  INSERT INTO "User"(first_name, last_name, email, user_password, user_type)
+  VALUES ('Dean','Sabbah','deansabbah@cmail.carleton.ca', 'password', 0)
+  RETURNING user_id
+)
+INSERT INTO Member(member_id, phone_number, date_of_birth, gender)
+SELECT user_id, '123-456-7890', '2002-10-07', 'male' FROM new_user;
