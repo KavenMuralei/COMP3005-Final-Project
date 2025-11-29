@@ -99,8 +99,8 @@ public class Main {
             gender = input.nextLine().toLowerCase();
         }
         System.out.println(
-            "You entered:\nName: %s %s\nEmail: %s\nPassword: %s\nPhone Number: %s\nDate of Birth: %s\nIs this correct? (yes, no)"
-            .formatted(f_name, l_name, email, password, phone_number, dob)
+            "You entered:\nName: %s %s\nEmail: %s\nPassword: %s\nPhone Number: %s\nDate of Birth: %s\nGender: %s\nIs this correct? (yes, no)"
+            .formatted(f_name, l_name, email, password, phone_number, dob, gender)
         );
         String confirm = "";
         while(!confirm.equals("yes") && !confirm.equals("no")){
