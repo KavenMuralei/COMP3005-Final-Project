@@ -2,7 +2,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Main {
@@ -57,6 +59,93 @@ public class Main {
         return 0;
     }
 
+    private static void registerUser(Connection connection, Scanner input) {
+        String f_name = "", l_name = "", email = "", password = "", phone_number = "", dob = "", gender = "";
+        System.out.println("Please Enter First Name");
+        while (f_name.isEmpty()) {
+            f_name = input.nextLine();
+        }
+        System.out.println("Please Enter Last Name");
+        while (l_name.isEmpty()) {
+            l_name = input.nextLine();
+        }
+        System.out.println("Please Email");
+        while (email.isEmpty()) {
+            email = input.nextLine();
+        }
+        System.out.println("Please Enter Password");
+        while (password.isEmpty()) {
+            password = input.nextLine();
+        }
+        System.out.println("Please Enter Phone Number (xxx-xxx-xxxx)");
+        while (phone_number.isEmpty()) {
+            phone_number = input.nextLine();
+        }
+        System.out.println("Please Enter Date of Birth (YYYY-MM-DD)");
+        boolean valid = false;
+        while (dob.isEmpty() || !valid) {
+            dob = input.nextLine();
+            try {
+                LocalDate.parse(dob);
+                valid = true;
+            }
+            catch (Exception e) {
+                valid = false;
+            }
+        }
+        System.out.println("Please Enter gender (male, female, other)");
+        HashSet<String> possibleGenders = new HashSet<String>(Arrays.asList("male", "female", "other"));
+        while (gender.isEmpty() || !possibleGenders.contains(gender)) {
+            gender = input.nextLine().toLowerCase();
+        }
+        System.out.println(
+            "You entered:\nName: %s %s\nEmail: %s\nPassword: %s\nPhone Number: %s\nDate of Birth: %s\nIs this correct? (yes, no)"
+            .formatted(f_name, l_name, email, password, phone_number, dob)
+        );
+        String confirm = "";
+        while(!confirm.equals("yes") && !confirm.equals("no")){
+            confirm = input.nextLine().toLowerCase();
+        }
+        if(confirm.equals("no")){
+            registerUser(connection, input);
+            return;
+        }
+        
+        String query = """
+                WITH new_user AS (
+                    INSERT INTO \"User\"(first_name, last_name, email, user_password, user_type) 
+                    VALUES (?, ?, ?, ?, 0) 
+                    RETURNING user_id
+                )
+                INSERT INTO Member(member_id, phone_number, date_of_birth, gender)
+                SELECT user_id, ?, ?, ? FROM new_user;
+                """;
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, f_name);
+            ps.setString(2, l_name);
+            ps.setString(3, email);
+            ps.setString(4, password);
+            ps.setString(5, phone_number);
+            ps.setDate(6, java.sql.Date.valueOf(dob));
+            ps.setString(7, gender);
+
+            try{
+                ps.executeUpdate();
+                System.out.println("New member added successfully");
+                return;
+            }
+            catch (Exception e) {
+                System.out.println("Error adding new member:");
+                System.out.println(e);
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("Error connecting to database:");
+            System.out.println(e);
+            return;
+        }
+    }
+
     private static void logIn(Connection connection, Scanner input) {
         String email  = "", password = "";
         System.out.println("Enter Email:");
@@ -96,8 +185,7 @@ public class Main {
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error connecting to database:");
             System.out.println(e);
             return;
@@ -116,7 +204,18 @@ public class Main {
 //            statement.close();
             if (connection != null) {
                 System.out.println("Connected to database");
-                logIn(connection, input);
+
+                String option = "";
+                System.out.println("Login or Register?");
+                while (!option.equals("login") && !option.equals("register")){
+                    System.out.println("Please enter 'login' or 'register'");
+                    option = input.nextLine().toLowerCase();
+                }
+
+                if(option.equals("login"))
+                    logIn(connection, input);
+                else
+                    registerUser(connection, input);
                 connection.close();
             } else {
                 System.out.println("Failed to connect to database.");
