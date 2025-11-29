@@ -12,7 +12,7 @@ public class SessionManager {
     }
 
     public static void setPassword(String _password) {
-        _password = password;
+        password = _password;
     }
 
     public static String getEmail() {

@@ -60,55 +60,54 @@ public class Main {
     }
 
     private static void registerUser(Connection connection, Scanner input) {
-        String f_name = "", l_name = "", email = "", password = "", phone_number = "", dob = "", gender = "";
-        System.out.println("Please Enter First Name");
-        while (f_name.isEmpty()) {
-            f_name = input.nextLine();
-        }
-        System.out.println("Please Enter Last Name");
-        while (l_name.isEmpty()) {
-            l_name = input.nextLine();
-        }
-        System.out.println("Please Email");
-        while (email.isEmpty()) {
-            email = input.nextLine();
-        }
-        System.out.println("Please Enter Password");
-        while (password.isEmpty()) {
-            password = input.nextLine();
-        }
-        System.out.println("Please Enter Phone Number (xxx-xxx-xxxx)");
-        while (phone_number.isEmpty()) {
-            phone_number = input.nextLine();
-        }
-        System.out.println("Please Enter Date of Birth (YYYY-MM-DD)");
-        boolean valid = false;
-        while (dob.isEmpty() || !valid) {
-            dob = input.nextLine();
-            try {
-                LocalDate.parse(dob);
-                valid = true;
+        String f_name = "", l_name = "", email = "", password = "", phone_number = "", dob = "", gender = "", confirm = "";
+        while(confirm.equals("no") || confirm.isEmpty()){
+            f_name = ""; l_name = ""; email = ""; password = ""; phone_number = ""; dob = ""; gender = ""; confirm = "";
+            System.out.println("Please Enter First Name");
+            while (f_name.isEmpty()) {
+                f_name = input.nextLine();
             }
-            catch (Exception e) {
-                valid = false;
+            System.out.println("Please Enter Last Name");
+            while (l_name.isEmpty()) {
+                l_name = input.nextLine();
             }
-        }
-        System.out.println("Please Enter gender (male, female, other)");
-        HashSet<String> possibleGenders = new HashSet<String>(Arrays.asList("male", "female", "other"));
-        while (gender.isEmpty() || !possibleGenders.contains(gender)) {
-            gender = input.nextLine().toLowerCase();
-        }
-        System.out.println(
-            "You entered:\nName: %s %s\nEmail: %s\nPassword: %s\nPhone Number: %s\nDate of Birth: %s\nGender: %s\nIs this correct? (yes, no)"
-            .formatted(f_name, l_name, email, password, phone_number, dob, gender)
-        );
-        String confirm = "";
-        while(!confirm.equals("yes") && !confirm.equals("no")){
-            confirm = input.nextLine().toLowerCase();
-        }
-        if(confirm.equals("no")){
-            registerUser(connection, input);
-            return;
+            System.out.println("Please Enter Email");
+            while (email.isEmpty()) {
+                email = input.nextLine().toLowerCase();
+            }
+            System.out.println("Please Enter Password");
+            while (password.isEmpty()) {
+                password = input.nextLine();
+            }
+            System.out.println("Please Enter Phone Number (xxx-xxx-xxxx)");
+            while (phone_number.isEmpty()) {
+                phone_number = input.nextLine();
+            }
+            System.out.println("Please Enter Date of Birth (YYYY-MM-DD)");
+            boolean valid = false;
+            while (dob.isEmpty() || !valid) {
+                dob = input.nextLine();
+                try {
+                    LocalDate.parse(dob);
+                    valid = true;
+                }
+                catch (Exception e) {
+                    valid = false;
+                }
+            }
+            System.out.println("Please Enter gender (male, female, other)");
+            HashSet<String> possibleGenders = new HashSet<String>(Arrays.asList("male", "female", "other"));
+            while (gender.isEmpty() || !possibleGenders.contains(gender)) {
+                gender = input.nextLine().toLowerCase();
+            }
+            System.out.println(
+                "You entered:\nName: %s %s\nEmail: %s\nPassword: %s\nPhone Number: %s\nDate of Birth: %s\nGender: %s\nIs this correct?"
+                .formatted(f_name, l_name, email, password, phone_number, dob, gender)
+            );
+            while(!confirm.equals("yes") && !confirm.equals("no")){
+                System.out.println("Enter 'yes' or 'no'");
+                confirm = input.nextLine().toLowerCase();
+            }
         }
         
         String query = """
@@ -174,7 +173,6 @@ public class Main {
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
                     System.out.println("User not found.");
-                    logIn(connection, input);
                     return; 
                 }
 
