@@ -23,6 +23,12 @@ public class Main {
                 case "change phone number":
                     Member.changePhoneNumber(connection, input);
                     break;
+                case "Change date of birth":
+                    Member.changeDoB(connection, input);
+                    break;
+                case "change gender":
+                    Member.changeGender(connection, input);
+                    break;
                 case "q", "quit":
                     break loop;
                 default:
@@ -86,25 +92,14 @@ public class Main {
         return 0;
     }
   
-    public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
-        try{
-            String url = "jdbc:postgresql://localhost:5432/finalproject";
-            String user = "postgres";
-            String password = "admin";
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(url,user,password);
-            if (connection != null) {
-                System.out.println("Connected to database");
+    public static void mainLoop(Connection connection, Scanner input) {
+        loop: while (true) {
+            String option = "";
+            System.out.println("Login or Register?");
+            option = input.nextLine().toLowerCase();
 
-                String option = "";
-                System.out.println("Login or Register?");
-                while (!option.equals("login") && !option.equals("register")){
-                    System.out.println("Please enter 'login' or 'register'");
-                    option = input.nextLine().toLowerCase();
-                }
-
-                if(option.equals("login")) {
+            switch (option) {
+                case "login" -> {
                     User.logIn(connection, input);
                     switch (User.getUserType()) {
                         case 0 -> memberLoop(connection, input);
@@ -117,8 +112,29 @@ public class Main {
                         }
                     }
                 }
-                else
-                    User.registerUser(connection, input);
+                case "register" -> User.registerUser(connection, input);
+                case "q", "quit" -> { break loop; }
+                default -> {
+                    System.out.println("Please enter 'login' or 'register'");
+                    option = input.nextLine().toLowerCase();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args){
+        Scanner input = new Scanner(System.in);
+        try{
+            String url = "jdbc:postgresql://localhost:5432/finalproject";
+            String user = "postgres";
+            String password = "admin";
+            Class.forName("org.postgresql.Driver");
+            Connection connection = DriverManager.getConnection(url,user,password);
+            if (connection != null) {
+                System.out.println("Connected to database");
+
+                mainLoop(connection, input);
+                
                 connection.close();
             } else {
                 System.out.println("Failed to connect to database.");

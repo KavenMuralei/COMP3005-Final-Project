@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS ClassGroup CASCADE;
 DROP TABLE IF EXISTS Join_Group CASCADE;
 DROP TABLE IF EXISTS PTSession CASCADE;
 DROP TABLE IF EXISTS HealthMetric CASCADE;
+DROP TABLE IF EXISTS FitnessGoal CASCADE;
 DROP TABLE IF EXISTS TrainerAvailability CASCADE;
 DROP TABLE IF EXISTS Maintenance CASCADE;
 
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS ClassSession (
 CREATE TABLE IF NOT EXISTS Join_Group (
     group_id INT REFERENCES Room(room_id) NOT NULL,
     member_id INT REFERENCES Member(member_id) NOT NULL,
-    enrollment_date DATE NOT NULL
+    enrollment_date DATE NOT NULL,
     PRIMARY KEY (group_id, member_id)
 );
 
@@ -122,11 +123,11 @@ CREATE TABLE IF NOT EXISTS FitnessGoal(
 );
 
 CREATE TABLE IF NOT EXISTS TrainerAvailability (
+    availability_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
-    day DATE PRIMARY KEY NOT NULL,
+    day DATE NOT NULL,
     shift_start TIME NOT NULL,
-    shift_end TIME NOT NULL,
-    PRIMARY KEY (trainer_id, day)
+    shift_end TIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Maintenance (

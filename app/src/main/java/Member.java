@@ -17,6 +17,10 @@ public class Member extends User{
             ps.setInt(1, user_id);
 
             try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    System.out.println("Member not found.");
+                    return; 
+                }
                 member_id = rs.getInt(1);
             } catch (Exception e) {
                 System.out.println("Error getting member_id:");
@@ -99,7 +103,7 @@ public class Member extends User{
     public static void changeGender(Connection connection, Scanner input) {
         String gender = "";
 
-        while (gender.isEmpty() || !gender.equals("male") || !gender.equals("female") || !gender.equals("other")) {
+        while (!gender.equals("male") || !gender.equals("female") || !gender.equals("other")) {
             System.out.println("Please enter new gender:");
             gender = input.nextLine().toLowerCase();
         }

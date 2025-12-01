@@ -93,8 +93,8 @@ public class User {
                     VALUES (?, ?, ?, ?, 0) 
                     RETURNING user_id
                 )
-                INSERT INTO Member(member_id, phone_number, date_of_birth, gender)
-                SELECT user_id, ?, ?, ? FROM new_user;
+                INSERT INTO Member(phone_number, date_of_birth, gender, user_id)
+                SELECT ?, ?, ?, user_id FROM new_user;
                 """;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, f_name);
@@ -154,7 +154,7 @@ public class User {
                 }
 
                 email = _email;
-                User.setUserId(rs.getInt(rs.findColumn("user_id")));
+                user_id = rs.getInt(rs.findColumn("user_id"));
                 user_type = rs.getInt(rs.findColumn("user_type"));
 
                 System.out.println("Hello " +rs.getString(rs.findColumn("first_name")) + "!");
