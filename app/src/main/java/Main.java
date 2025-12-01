@@ -14,12 +14,15 @@ public class Main {
             System.out.println("Please select operation:");
             option = input.nextLine();
             switch (option.toLowerCase()) {
+                case "change name":
+                    User.changeName(connection, input);
+                    break;
                 case "q", "quit":
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("member loop exited");
         return 0;
@@ -35,8 +38,8 @@ public class Main {
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("trainer loop exited");
         return 0;
@@ -52,8 +55,8 @@ public class Main {
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("admin loop exited");
         return 0;
