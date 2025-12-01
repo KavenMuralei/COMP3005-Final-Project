@@ -1,3 +1,20 @@
+DROP TABLE IF EXISTS "User" CASCADE;
+DROP TABLE IF EXISTS Member CASCADE;
+DROP TABLE IF EXISTS Trainer CASCADE;
+DROP TABLE IF EXISTS Admin CASCADE;
+DROP TABLE IF EXISTS Room CASCADE;
+DROP TABLE IF EXISTS Equipment CASCADE;
+DROP TABLE IF EXISTS Contains_Equipment CASCADE;
+DROP TABLE IF EXISTS Bookings CASCADE;
+DROP TABLE IF EXISTS Class CASCADE;
+DROP TABLE IF EXISTS ClassSession CASCADE;
+DROP TABLE IF EXISTS ClassGroup CASCADE;
+DROP TABLE IF EXISTS Join_Group CASCADE;
+DROP TABLE IF EXISTS PTSession CASCADE;
+DROP TABLE IF EXISTS HealthMetric CASCADE;
+DROP TABLE IF EXISTS TrainerAvailability CASCADE;
+DROP TABLE IF EXISTS Maintenance CASCADE;
+
 CREATE TABLE IF NOT EXISTS "User" (
     user_id SERIAL PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
@@ -33,7 +50,22 @@ CREATE TABLE IF NOT EXISTS Room (
 CREATE TABLE IF NOT EXISTS Equipment (
     equipment_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    status VARCHAR(255) NOT NULL DEFAULT 'OK'
+    status VARCHAR(255) NOT NULL DEFAULT 'OK',
+    location_details VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS Contains_Equipment (
+    room_id INT REFERENCES Room (room_id) NOT NULL,
+    equipment_id INT REFERENCES Equipment (equipment_id) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Bookings (
+    booking_id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
+    room_id INT REFERENCES Room(room_id) NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    day DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Class (
@@ -42,34 +74,29 @@ CREATE TABLE IF NOT EXISTS Class (
     description TEXT
 );
 
-CREATE TABLE IF NOT EXISTS ClassSession (
-    session_id SERIAL PRIMARY KEY,
-    class_type_id INT REFERENCES Class(class_id) NOT NULL,
-    trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
-    room_id INT REFERENCES Room(room_id) NOT NULL,
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
-    max_capacity INT,
-    UNIQUE (room_id, start_time)
-);
-
 CREATE TABLE IF NOT EXISTS ClassGroup(
     group_id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES Member(member_id) NOT NULL,
-    session_id INT REFERENCES ClassSession(session_id) NOT NULL,
-    enrollment_date TIMESTAMP NOT NULL,
-    UNIQUE (member_id, session_id)
+    max_capacity INT
+);
+
+CREATE TABLE IF NOT EXISTS ClassSession (
+    session_id SERIAL PRIMARY KEY,
+    class_id INT REFERENCES Class(class_id) NOT NULL,
+    group_id INT REFERENCES ClassGroup(group_id) NOT NULL,
+    booking_id INT REFERENCES Bookings(booking_id) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Join_Group (
+    group_id INT REFERENCES Room(room_id),
+    member_id INT REFERENCES Member(member_id),
+    enrollment_date DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS PTSession (
     pt_session_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
-    trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
-    room_id INT REFERENCES Room(room_id), 
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
-    status VARCHAR(255) NOT NULL DEFAULT 'scheduled',
-    UNIQUE (trainer_id, start_time)
+    booking_id INT REFERENCES Bookings(booking_id) NOT NULL,
+    status VARCHAR(255) NOT NULL DEFAULT 'scheduled'
 );
 
 CREATE TABLE IF NOT EXISTS HealthMetric (
@@ -93,20 +120,16 @@ CREATE TABLE IF NOT EXISTS FitnessGoal(
 );
 
 CREATE TABLE IF NOT EXISTS TrainerAvailability (
-    availability_id SERIAL PRIMARY KEY,
+    day DATE PRIMARY KEY NOT NULL,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
-    start_day DATE NOT NULL,
-    end_day DATE NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL
+    shift_start TIME NOT NULL,
+    shift_end TIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Maintenance (
-    maintenance_id SERIAL PRIMARY KEY,
+    record_id SERIAL PRIMARY KEY,
     equipment_id INT REFERENCES Equipment(equipment_id) NOT NULL,
-    room_id INT REFERENCES Room(room_id),
     report_date TIMESTAMP NOT NULL,
     issue_description TEXT,
-    status VARCHAR(255) NOT NULL DEFAULT 'reported',
-    issue_resolved_date TIMESTAMP
+    status VARCHAR(255) NOT NULL DEFAULT 'reported'
 );
