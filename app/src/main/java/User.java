@@ -29,7 +29,7 @@ public class User {
             try {
                 ps.executeUpdate();
             } catch (Exception e) {
-                System.out.println("Error adding updating name:");
+                System.out.println("Error updating name:");
                 System.out.println(e);
                 return;
             }
@@ -39,5 +39,38 @@ public class User {
             System.out.println(e);
         }
         System.out.println("Name changed!");
+    }
+    
+    public static void changeEmail(Connection connection, Scanner input) {
+        String email = "";
+
+        while (email.isEmpty()) {
+            System.out.println("Please enter new email:");
+            email = input.nextLine();
+        }
+
+        String query = """
+                UPDATE \"User\"
+                SET email = ?
+                WHERE user_id = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setInt(2, SessionManager.getUserId());
+
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Error updating email:");
+                System.out.println(e);
+                return;
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error connection to database:");
+            System.out.println(e);
+        }
+        System.out.println("Email changed!");
     }
 }

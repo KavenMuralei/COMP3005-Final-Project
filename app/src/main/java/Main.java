@@ -17,6 +17,9 @@ public class Main {
                 case "change name":
                     User.changeName(connection, input);
                     break;
+                case "change email":
+                    User.changeEmail(connection, input);
+                    break;
                 case "q", "quit":
                     break loop;
                 default:
