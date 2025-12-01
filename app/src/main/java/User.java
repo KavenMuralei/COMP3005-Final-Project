@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 public class User {
-    static int user_id;
-    static String email;
-    static int user_type;
+    protected static int user_id;
+    protected static String email;
+    protected static int user_type;
 
     public static void setEmail(String _email) {
         email = _email;

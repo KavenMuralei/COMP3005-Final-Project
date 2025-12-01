@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.util.Scanner;
 
 public class Member extends User{
-    static int member_id;
+    private static int member_id;
 
     public static void fetchMemberId(Connection connection) {
         String query = """
