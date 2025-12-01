@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Member (
     member_id INT PRIMARY KEY REFERENCES "User"(user_id) ON DELETE CASCADE,
     phone_number VARCHAR(20),
     date_of_birth DATE,
-    gender VARCHAR(255),
+    gender VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS Trainer (
