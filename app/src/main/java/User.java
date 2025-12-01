@@ -269,37 +269,4 @@ public class User {
         }
         System.out.println("Password changed!");
     }
-
-    public static void changeGender(Connection connection, Scanner input) {
-        String gender = "";
-
-        while (gender.isEmpty() || !gender.equals("male") || !gender.equals("female") || !gender.equals("other")) {
-            System.out.println("Please enter new gender:");
-            gender = input.nextLine().toLowerCase();
-        }
-
-        String query = """
-                UPDATE \"User\"
-                SET gender = ?
-                WHERE user_id = ?
-                """;
-
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, gender);
-            ps.setInt(2, user_id);
-
-            try {
-                ps.executeUpdate();
-            } catch (Exception e) {
-                System.out.println("Error updating gender:");
-                System.out.println(e);
-                return;
-            }
-        }
-        catch (Exception e) {
-            System.out.println("Error connection to database:");
-            System.out.println(e);
-        }
-        System.out.println("Gender changed!");
-    }
 }
