@@ -31,6 +31,7 @@ public class Main {
                     Member.changeGender(connection, input);
                     break;
                 case "logout":
+                    Member.logout();
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -58,6 +59,7 @@ public class Main {
                     User.changePassword(connection, input);
                     break;
                 case "logout":
+                    // TODO: Implement logout function for user type
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -85,6 +87,7 @@ public class Main {
                     User.changePassword(connection, input);
                     break;
                 case "logout":
+                    // TODO: Implement logout function for user type
                     break loop;
                 default:
                     System.out.println("Invalid input");

@@ -6,6 +6,11 @@ import java.util.Scanner;
 public class Member extends User{
     private static int member_id;
 
+    public static void logout() {
+        member_id = -1;
+        User.logout();
+    }
+
     public static void fetchMemberId(Connection connection) {
         String query = """
                 SELECT member_id 

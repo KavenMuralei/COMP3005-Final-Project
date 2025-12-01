@@ -166,6 +166,12 @@ public class User {
         }
     }
 
+    public static void logout() {
+        user_id = -1;
+        email = "";
+        user_type = -1;
+    }
+
     public static void changeName(Connection connection, Scanner input) {
         String f_name = "", l_name = "";
         
