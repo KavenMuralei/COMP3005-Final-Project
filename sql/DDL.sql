@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS Class (
 
 CREATE TABLE IF NOT EXISTS ClassGroup (
     group_id SERIAL PRIMARY KEY,
+    class_id INT REFERENCES Class(class_id),
     max_capacity INT
 );
 
