@@ -25,21 +25,18 @@ CREATE TABLE IF NOT EXISTS "User" (
 );
 
 CREATE TABLE IF NOT EXISTS Member (
-    member_id SERIAL PRIMARY KEY,
+    member_id INT PRIMARY KEY REFERENCES "User"(user_id) ON DELETE CASCADE,
     phone_number VARCHAR(20),
     date_of_birth DATE,
     gender VARCHAR(255),
-    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Trainer (
-    trainer_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
+    trainer_id INT PRIMARY KEY REFERENCES "User"(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Admin (
-    admin_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
+    admin_id INT PRIMARY KEY REFERENCES "User"(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Room (
@@ -75,7 +72,7 @@ CREATE TABLE IF NOT EXISTS Class (
 
 CREATE TABLE IF NOT EXISTS ClassGroup (
     group_id SERIAL PRIMARY KEY,
-    class_id INT REFERENCES Class(class_id),
+    class_id INT NOT NULL REFERENCES Class(class_id),
     max_capacity INT
 );
 
