@@ -122,7 +122,8 @@ CREATE TABLE IF NOT EXISTS TrainerAvailability (
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
     day DATE NOT NULL,
     shift_start TIME NOT NULL,
-    shift_end TIME NOT NULL
+    shift_end TIME NOT NULL,
+	UNIQUE(trainer_id, day)
 );
 
 CREATE TABLE IF NOT EXISTS Maintenance (
