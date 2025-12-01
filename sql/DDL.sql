@@ -120,11 +120,11 @@ CREATE TABLE IF NOT EXISTS FitnessGoal (
 );
 
 CREATE TABLE IF NOT EXISTS TrainerAvailability (
+    availability_id SERIAL PRIMARY KEY,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
     day DATE NOT NULL,
     shift_start TIME NOT NULL,
-    shift_end TIME NOT NULL,
-    PRIMARY KEY (trainer_id, day)
+    shift_end TIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Maintenance (
