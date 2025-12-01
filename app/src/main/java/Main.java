@@ -186,8 +186,8 @@ public class Main {
                     return; 
                 }
 
-                SessionManager.setEmail(email);
-                SessionManager.setUserId(rs.getInt(rs.findColumn("user_id")));
+                User.setEmail(email);
+                User.setUserId(rs.getInt(rs.findColumn("user_id")));
 
                 System.out.println("Hello " +rs.getString(rs.findColumn("first_name")) + "!");
 
