@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS Trainer CASCADE;
 DROP TABLE IF EXISTS Admin CASCADE;
 DROP TABLE IF EXISTS Room CASCADE;
 DROP TABLE IF EXISTS Equipment CASCADE;
-DROP TABLE IF EXISTS Contains_Equipment CASCADE;
 DROP TABLE IF EXISTS Bookings CASCADE;
 DROP TABLE IF EXISTS Class CASCADE;
 DROP TABLE IF EXISTS ClassSession CASCADE;
@@ -12,6 +11,7 @@ DROP TABLE IF EXISTS ClassGroup CASCADE;
 DROP TABLE IF EXISTS Join_Group CASCADE;
 DROP TABLE IF EXISTS PTSession CASCADE;
 DROP TABLE IF EXISTS HealthMetric CASCADE;
+DROP TABLE IF EXISTS FitnessGoal CASCADE;
 DROP TABLE IF EXISTS TrainerAvailability CASCADE;
 DROP TABLE IF EXISTS Maintenance CASCADE;
 
@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS "User" (
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     user_password VARCHAR(255) NOT NULL,
-    user_type INT,
-    CHECK (user_type BETWEEN 0 AND 2)
+    user_type INT CHECK (user_type BETWEEN 0 AND 2)
 );
 
 CREATE TABLE IF NOT EXISTS Member (
@@ -30,17 +29,17 @@ CREATE TABLE IF NOT EXISTS Member (
     phone_number VARCHAR(20),
     date_of_birth DATE,
     gender VARCHAR(255),
-    user_id INT REFERENCES "User"(user_id)
+    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Trainer (
     trainer_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(user_id)
+    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Admin (
     admin_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(user_id)
+    user_id INT REFERENCES "User"(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Room (
@@ -56,7 +55,6 @@ CREATE TABLE IF NOT EXISTS Equipment (
     status VARCHAR(255) NOT NULL DEFAULT 'OK',
     location_details VARCHAR(255)
 );
-
 
 CREATE TABLE IF NOT EXISTS Bookings (
     booking_id SERIAL PRIMARY KEY,
@@ -75,7 +73,7 @@ CREATE TABLE IF NOT EXISTS Class (
     description TEXT
 );
 
-CREATE TABLE IF NOT EXISTS ClassGroup(
+CREATE TABLE IF NOT EXISTS ClassGroup (
     group_id SERIAL PRIMARY KEY,
     max_capacity INT
 );
@@ -88,9 +86,9 @@ CREATE TABLE IF NOT EXISTS ClassSession (
 );
 
 CREATE TABLE IF NOT EXISTS Join_Group (
-    group_id INT REFERENCES Room(room_id) NOT NULL,
+    group_id INT REFERENCES ClassGroup(group_id) NOT NULL,
     member_id INT REFERENCES Member(member_id) NOT NULL,
-    enrollment_date DATE NOT NULL
+    enrollment_date DATE NOT NULL,
     PRIMARY KEY (group_id, member_id)
 );
 
@@ -111,7 +109,7 @@ CREATE TABLE IF NOT EXISTS HealthMetric (
     bpm INT
 );
 
-CREATE TABLE IF NOT EXISTS FitnessGoal(
+CREATE TABLE IF NOT EXISTS FitnessGoal (
     goal_id SERIAL PRIMARY KEY,
     member_id INT REFERENCES Member(member_id) NOT NULL,
     goal_type VARCHAR(255) NOT NULL,
@@ -123,7 +121,7 @@ CREATE TABLE IF NOT EXISTS FitnessGoal(
 
 CREATE TABLE IF NOT EXISTS TrainerAvailability (
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
-    day DATE PRIMARY KEY NOT NULL,
+    day DATE NOT NULL,
     shift_start TIME NOT NULL,
     shift_end TIME NOT NULL,
     PRIMARY KEY (trainer_id, day)
