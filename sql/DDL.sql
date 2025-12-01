@@ -26,18 +26,21 @@ CREATE TABLE IF NOT EXISTS "User" (
 );
 
 CREATE TABLE IF NOT EXISTS Member (
-    member_id INT PRIMARY KEY REFERENCES "User"(user_id),
+    member_id SERIAL PRIMARY KEY,
     phone_number VARCHAR(20),
     date_of_birth DATE,
-    gender VARCHAR(255)
+    gender VARCHAR(255),
+    user_id INT REFERENCES "User"(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Trainer (
-    trainer_id INT PRIMARY KEY REFERENCES "User"(user_id)
+    trainer_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES "User"(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Admin (
-    admin_id INT PRIMARY KEY REFERENCES "User"(user_id)
+    admin_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES "User"(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Room (
