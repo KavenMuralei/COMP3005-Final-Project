@@ -9,6 +9,7 @@ public class Main {
         String option;
         loop: while (true) {
             System.out.println("Please select operation:");
+            // TODO: Display options, maybe also add sub-menus
             option = input.nextLine();
             switch (option.toLowerCase()) {
                 case "change name":
@@ -29,7 +30,7 @@ public class Main {
                 case "change gender":
                     Member.changeGender(connection, input);
                     break;
-                case "q", "quit":
+                case "logout":
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -44,6 +45,7 @@ public class Main {
         String option;
         loop: while (true) {
             System.out.println("Please select operation:");
+        // TODO: Display options, maybe also add sub-menus
             option = input.nextLine();
             switch (option.toLowerCase()) {
                 case "change name":
@@ -55,7 +57,7 @@ public class Main {
                 case "change password":
                     User.changePassword(connection, input);
                     break;
-                case "q", "quit":
+                case "logout":
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -70,6 +72,7 @@ public class Main {
         String option;
         loop: while (true) {
             System.out.println("Please select operation:");
+            // TODO: Display options, maybe also add sub-menus
             option = input.nextLine();
             switch (option.toLowerCase()) {
                 case "change name":
@@ -81,7 +84,7 @@ public class Main {
                 case "change password":
                     User.changePassword(connection, input);
                     break;
-                case "q", "quit":
+                case "logout":
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -95,7 +98,7 @@ public class Main {
     public static void mainLoop(Connection connection, Scanner input) {
         loop: while (true) {
             String option = "";
-            System.out.println("Login or Register?");
+            System.out.println("Login or Register? ('q'/'quit' to quit)");
             option = input.nextLine().toLowerCase();
 
             switch (option) {
@@ -108,14 +111,14 @@ public class Main {
                     
                         default -> {
                             System.out.println("Error, unexpected user type");
-                            return;
+                            break loop;
                         }
                     }
                 }
                 case "register" -> User.registerUser(connection, input);
                 case "q", "quit" -> { break loop; }
                 default -> {
-                    System.out.println("Please enter 'login' or 'register'");
+                    System.out.println("Please enter 'login' or 'register'. ('q'/'quit' to quit)");
                     option = input.nextLine().toLowerCase();
                 }
             }
