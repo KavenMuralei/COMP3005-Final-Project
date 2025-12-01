@@ -20,6 +20,9 @@ public class Main {
                 case "change email":
                     User.changeEmail(connection, input);
                     break;
+                case "change password":
+                    User.changePassword(connection, input);
+                    break;
                 case "q", "quit":
                     break loop;
                 default:

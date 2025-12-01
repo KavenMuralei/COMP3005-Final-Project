@@ -73,4 +73,37 @@ public class User {
         }
         System.out.println("Email changed!");
     }
+
+    public static void changePassword(Connection connection, Scanner input) {
+        String password = "";
+
+        while (password.isEmpty()) {
+            System.out.println("Please enter new password:");
+            password = input.nextLine();
+        }
+
+        String query = """
+                UPDATE \"User\"
+                SET user_password = ?
+                WHERE user_id = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, password);
+            ps.setInt(2, SessionManager.getUserId());
+
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Error updating password:");
+                System.out.println(e);
+                return;
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error connection to database:");
+            System.out.println(e);
+        }
+        System.out.println("Password changed!");
+    }
 }
