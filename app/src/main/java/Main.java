@@ -14,12 +14,21 @@ public class Main {
             System.out.println("Please select operation:");
             option = input.nextLine();
             switch (option.toLowerCase()) {
+                case "change name":
+                    User.changeName(connection, input);
+                    break;
+                case "change email":
+                    User.changeEmail(connection, input);
+                    break;
+                case "change password":
+                    User.changePassword(connection, input);
+                    break;
                 case "q", "quit":
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("member loop exited");
         return 0;
@@ -35,8 +44,8 @@ public class Main {
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("trainer loop exited");
         return 0;
@@ -52,8 +61,8 @@ public class Main {
                     break loop;
                 default:
                     System.out.println("Invalid input");
-                System.out.println("\n");
             }    
+            System.out.println("\n");
         }
         System.out.println("admin loop exited");
         return 0;
@@ -177,8 +186,8 @@ public class Main {
                     return; 
                 }
 
-                SessionManager.setEmail(email);
-                SessionManager.setUserId(rs.getInt(rs.findColumn("user_id")));
+                User.setEmail(email);
+                User.setUserId(rs.getInt(rs.findColumn("user_id")));
 
                 System.out.println("Hello " +rs.getString(rs.findColumn("first_name")) + "!");
 

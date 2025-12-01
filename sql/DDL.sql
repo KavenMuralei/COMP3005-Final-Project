@@ -57,10 +57,6 @@ CREATE TABLE IF NOT EXISTS Equipment (
     location_details VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS Contains_Equipment (
-    room_id INT REFERENCES Room (room_id) NOT NULL,
-    equipment_id INT REFERENCES Equipment (equipment_id) NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS Bookings (
     booking_id SERIAL PRIMARY KEY,
@@ -68,7 +64,9 @@ CREATE TABLE IF NOT EXISTS Bookings (
     room_id INT REFERENCES Room(room_id) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    day DATE NOT NULL
+    day DATE NOT NULL,
+    UNIQUE (room_id, day, start_time),
+    UNIQUE (trainer_id, day, start_time)
 );
 
 CREATE TABLE IF NOT EXISTS Class (
@@ -90,9 +88,10 @@ CREATE TABLE IF NOT EXISTS ClassSession (
 );
 
 CREATE TABLE IF NOT EXISTS Join_Group (
-    group_id INT REFERENCES Room(room_id),
-    member_id INT REFERENCES Member(member_id),
+    group_id INT REFERENCES Room(room_id) NOT NULL,
+    member_id INT REFERENCES Member(member_id) NOT NULL,
     enrollment_date DATE NOT NULL
+    PRIMARY KEY (group_id, member_id)
 );
 
 CREATE TABLE IF NOT EXISTS PTSession (
@@ -123,15 +122,17 @@ CREATE TABLE IF NOT EXISTS FitnessGoal(
 );
 
 CREATE TABLE IF NOT EXISTS TrainerAvailability (
-    day DATE PRIMARY KEY NOT NULL,
     trainer_id INT REFERENCES Trainer(trainer_id) NOT NULL,
+    day DATE PRIMARY KEY NOT NULL,
     shift_start TIME NOT NULL,
-    shift_end TIME NOT NULL
+    shift_end TIME NOT NULL,
+    PRIMARY KEY (trainer_id, day)
 );
 
 CREATE TABLE IF NOT EXISTS Maintenance (
     record_id SERIAL PRIMARY KEY,
     equipment_id INT REFERENCES Equipment(equipment_id) NOT NULL,
+    room_id INT REFERENCES Room(room_id),
     report_date TIMESTAMP NOT NULL,
     issue_description TEXT,
     status VARCHAR(255) NOT NULL DEFAULT 'reported'
