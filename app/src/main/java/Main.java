@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class Main {
     private static int memberLoop(Connection connection, Scanner input) {
+        Member.fetchMemberId(connection);
+
         String option;
         loop: while (true) {
             System.out.println("Please select operation:");
