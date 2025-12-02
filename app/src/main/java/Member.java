@@ -1,5 +1,9 @@
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Member extends User{
@@ -107,12 +111,12 @@ public class Member extends User{
         """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, member_id);
+            ps.setInt(1, user_id);
 
             try (ResultSet rs = ps.executeQuery()) {
 
                 if (!rs.isBeforeFirst()) { // check if empty
-                    System.out.println("No dashboard data found for member " + member_id);
+                    System.out.println("No dashboard data found for member " + user_id);
                     return;
                 }
 
@@ -173,7 +177,7 @@ public class Member extends User{
         """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, member_id);
+            ps.setInt(1, user_id);
             ps.setString(2, goalType);
             ps.setDouble(3, target);
             ps.setDate(4, Date.valueOf(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
@@ -221,7 +225,7 @@ public class Member extends User{
             """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, member_id);
+            ps.setInt(1, user_id);
             ps.setTimestamp(2, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
 
             if (weight == null) ps.setNull(3, java.sql.Types.NUMERIC);
@@ -252,7 +256,7 @@ public class Member extends User{
             """;
 
         try (PreparedStatement psList = connection.prepareStatement(listQuery)) {
-            psList.setInt(1, member_id);
+            psList.setInt(1, user_id);
 
             try (ResultSet rs = psList.executeQuery()) {
                 System.out.println("===== Current Fitness Goals =====");
@@ -325,7 +329,7 @@ public class Member extends User{
                 }
 
                 ps.setInt(3, goalId);
-                ps.setInt(4, member_id);
+                ps.setInt(4, user_id);
 
                 int rows = ps.executeUpdate();
                 if (rows > 0) {
@@ -346,7 +350,7 @@ public class Member extends User{
 
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ps.setInt(1, goalId);
-                ps.setInt(2, member_id);
+                ps.setInt(2, user_id);
 
                 int rows = ps.executeUpdate();
                 if (rows > 0) {
@@ -373,7 +377,7 @@ public class Member extends User{
             """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, member_id);
+            ps.setInt(1, user_id);
 
             try (ResultSet rs = ps.executeQuery()) {
                 System.out.println("===== Health History =====");
@@ -389,7 +393,7 @@ public class Member extends User{
                 }
 
                 if (!hasHistory) {
-                    System.out.println("No health history found for member " + member_id);
+                    System.out.println("No health history found for member " + user_id);
                 }
             }
 
