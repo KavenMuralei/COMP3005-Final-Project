@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class User {
     protected static int user_id;
     protected static String email;
-    protected static int user_type;
+    protected static int user_type = -1;
 
     public static void setEmail(String _email) {
         email = _email;

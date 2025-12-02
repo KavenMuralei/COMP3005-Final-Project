@@ -3,10 +3,7 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 public class Main {
-    private static int memberLoop(Connection connection, Scanner input) {
-        Member.fetchMemberId(connection);
-
-        String option;
+    private static int memberLoop(Connection connection, Scanner input) {String option;
         loop: while (true) {
             System.out.println("Please select operation:");
             // TODO: Display options, maybe also add sub-menus
@@ -31,7 +28,7 @@ public class Main {
                     Member.changeGender(connection, input);
                     break;
                 case "logout":
-                    Member.logout();
+                    User.logout();
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -58,8 +55,17 @@ public class Main {
                 case "change password":
                     User.changePassword(connection, input);
                     break;
+                case "display schedule":
+                    Trainer.displaySchedule(connection);
+                    break;
+                case "set availability":
+                    Trainer.setAvailability(connection, input);
+                    break;
+                case "search member":
+                    Trainer.searchMember(connection, input);
+                    break;
                 case "logout":
-                    // TODO: Implement logout function for user type
+                    User.logout();
                     break loop;
                 default:
                     System.out.println("Invalid input");
@@ -87,7 +93,7 @@ public class Main {
                     User.changePassword(connection, input);
                     break;
                 case "logout":
-                    // TODO: Implement logout function for user type
+                    User.logout();
                     break loop;
                 default:
                     System.out.println("Invalid input");
