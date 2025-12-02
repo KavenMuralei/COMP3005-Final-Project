@@ -192,6 +192,8 @@ public class Admin extends User{
                 while (!valid) {
                     System.out.println("Enter an equipment id: ");
                     equipment_id = input.nextInt();
+                    equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
+                    equipmentRS = equipmentQuery.getResultSet();
                     while (equipmentRS.next()) {
                         if (equipment_id == equipmentRS.getInt("equipment_id")) {
                             valid = true;
@@ -215,6 +217,8 @@ public class Admin extends User{
                 while (!valid) {
                     System.out.println("Enter a room id that the equipment is in: ");
                     room_id = input.nextInt();
+                    roomQuery.execute("SELECT room_id,room_name FROM Room");
+                    roomRS = roomQuery.getResultSet();
                     while (roomRS.next()) {
                         if (room_id == roomRS.getInt("room_id")) {
                             valid = true;
