@@ -30,6 +30,21 @@ public class Main {
                 case "logout":
                     User.logout();
                     break loop;
+                case "dashboard":
+                    Member.dashboard(connection);
+                    break;
+                case "add fitness goal":
+                    Member.addFitnessGoal(connection, input);
+                    break;
+                case "manage fitness goals":
+                    Member.manageFitnessGoals(connection, input);
+                    break;
+                case "manage health metrics":
+                    Member.manageHealthMetric(connection, input);
+                    break;
+                case "view health history":
+                    Member.viewHealthHistory(connection);
+                    break;
                 default:
                     System.out.println("Invalid input");
             }    
