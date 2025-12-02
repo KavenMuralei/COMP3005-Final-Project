@@ -19,7 +19,7 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    while (true) {
+                    loop: while (true) {
                         System.out.println("Profile Management Options:");
                         System.out.println("1. Change Name");
                         System.out.println("2. Change Email");
@@ -46,7 +46,7 @@ public class Main {
                             case "7": Member.addFitnessGoal(connection, input); break;
                             case "8": Member.manageFitnessGoals(connection, input); break;
                             case "9": Member.manageHealthMetrics(connection, input); break;
-                            case "10": continue;  // Back to main menu
+                            case "10": break loop;  // Back to main menu
                             default:
                                 System.out.println("Invalid option.");
                         }

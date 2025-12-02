@@ -179,10 +179,10 @@ CREATE OR REPLACE FUNCTION update_goal_on_metric()
 RETURNS TRIGGER AS $$
 DECLARE
     goal_target NUMERIC;
-    goal_type TEXT;
+    goal_name VARCHAR(255);
 BEGIN
     SELECT target, goal_type
-    INTO goal_target, goal_type
+    INTO goal_target, goal_name
     FROM FitnessGoal
     WHERE member_id = NEW.member_id
       AND status = 'ongoing'
@@ -193,7 +193,7 @@ BEGIN
     END IF;
 
     -- weight check
-    IF goal_type = 'weight' AND NEW.weight IS NOT NULL THEN
+    IF goal_name = 'weight' AND NEW.weight IS NOT NULL THEN
         IF NEW.weight <= goal_target THEN
             UPDATE FitnessGoal
             SET status = 'completed',
@@ -204,7 +204,7 @@ BEGIN
     END IF;
 
     -- body fat check
-    IF goal_type = 'bodyfat' AND NEW.bodyfat_percent IS NOT NULL THEN
+    IF goal_name = 'bodyfat' AND NEW.bodyfat_percent IS NOT NULL THEN
         IF NEW.bodyfat_percent <= goal_target THEN
             UPDATE FitnessGoal
             SET status = 'completed',
@@ -215,7 +215,7 @@ BEGIN
     END IF;
 
     -- height check
-    IF goal_type = 'height' AND NEW.height_cm IS NOT NULL THEN
+    IF goal_name = 'height' AND NEW.height_cm IS NOT NULL THEN
         IF NEW.height_cm >= goal_target THEN
             UPDATE FitnessGoal
             SET status = 'completed',
@@ -226,7 +226,7 @@ BEGIN
     END IF;
 
     -- bpm check
-    IF goal_type = 'bpm' AND NEW.bpm IS NOT NULL THEN
+    IF goal_name = 'bpm' AND NEW.bpm IS NOT NULL THEN
         IF NEW.bpm <= goal_target THEN
             UPDATE FitnessGoal
             SET status = 'completed',
