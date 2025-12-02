@@ -2,7 +2,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -10,41 +9,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Trainer extends User{
-    private static int trainer_id;
-
-    public static void logout() {
-        trainer_id = -1;
-        User.logout();
-    }
-
-    public static void fetchTrainerId(Connection connection) {
-        String query = """
-                SELECT trainer_id 
-                FROM Trainer
-                WHERE user_id = ?
-                """;
-
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, user_id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) {
-                    System.out.println("Trainer not found.");
-                    return; 
-                }
-                trainer_id = rs.getInt(1);
-            } catch (Exception e) {
-                System.out.println("Error getting trainer_id:");
-                System.out.println(e);
-                return;
-            }
-        }
-        catch (Exception e) {
-            System.out.println("Error connection to database:");
-            System.out.println(e);
-        }
-    }
-
     public static void displaySchedule(Connection connection) {
         String sql = """
             SELECT b.booking_id,
@@ -70,8 +34,8 @@ public class Trainer extends User{
             """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, trainer_id);
-            ps.setInt(2, trainer_id);
+            ps.setInt(1, user_id);
+            ps.setInt(2, user_id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     System.out.printf("Booking ID: %s, %s %s to %s room:%s type:%s",
@@ -98,7 +62,7 @@ public class Trainer extends User{
                 """;
         
         try (PreparedStatement ps = connection.prepareStatement(query)){
-            ps.setInt(1, trainer_id);
+            ps.setInt(1, user_id);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -160,7 +124,7 @@ public class Trainer extends User{
         }
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, trainer_id);
+            ps.setInt(1, user_id);
             ps.setDate(2, Date.valueOf(day));
             ps.setTime(3, java.sql.Time.valueOf(startTime));
             ps.setTime(4, java.sql.Time.valueOf(endTime));
@@ -191,7 +155,7 @@ public class Trainer extends User{
             }
         }
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, trainer_id);
+            ps.setInt(1, user_id);
             ps.setDate(2, Date.valueOf(day));
 
             try {
@@ -207,7 +171,6 @@ public class Trainer extends User{
     }
 
     public static void setAvailability(Connection connection, Scanner input) {
-
         String change_type = "";
 
         loop: while(true) {
@@ -229,6 +192,102 @@ public class Trainer extends User{
                     change_type = input.nextLine();
                 }
             }
+        }
+    }
+
+    public static void searchMember(Connection connection, Scanner input) {
+        String query = """
+                SELECT user_id 
+                FROM \"User\" 
+                WHERE LOWER(first_name) = ? AND LOWER(last_name) = ? AND user_type = 0
+                """;
+                
+        String f_name = "";
+        while(f_name.isEmpty()) {
+            System.out.println("Please enter first name of member.");
+            f_name = input.nextLine();
+        }
+
+        String l_name = "";
+        while(l_name.isEmpty()) {
+            System.out.println("Please enter last name of member.");
+            l_name = input.nextLine();
+        }
+        int member_id = -1;
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, f_name.toLowerCase());
+            ps.setString(2, l_name.toLowerCase());
+
+            try (ResultSet rs = ps.executeQuery()){
+                if(!rs.next()) {
+                    System.out.println("User not found.");
+                    return;
+                }
+
+                member_id = rs.getInt("user_id");
+            } catch (Exception e) {
+                System.err.println("Error searching for member:");
+                System.err.println(e);
+            }
+        } catch (Exception e) {
+            System.err.println("Error connecting to database:");
+            System.err.println(e);
+        }
+        // Latest health metric
+        String latestMetricSql = """
+                SELECT weight, height_cm, bodyfat_percent, bpm, time
+                FROM HealthMetric
+                WHERE member_id = ?
+                ORDER BY time DESC
+                LIMIT 1
+                """;
+        try (PreparedStatement ps = connection.prepareStatement(latestMetricSql)) {
+            ps.setInt(1, member_id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    System.out.println("Latest health metric:");
+                    System.out.printf("  time: %s, weight: %s, height_cm: %s, bodyfat: %s, bpm: %s%n",
+                        rs.getTimestamp("time"),
+                        rs.getObject("weight"),
+                        rs.getObject("height_cm"),
+                        rs.getObject("bodyfat_percent"),
+                        rs.getObject("bpm")
+                    );
+                } else {
+                    System.out.println("No health metrics recorded for this member.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching latest health metric:");
+            System.err.println(e);
+        }
+
+        // Ongoing fitness goals
+        String goalsSql = """
+                SELECT goal_id, goal_type, target, start_of_goal, end_of_goal
+                FROM FitnessGoal
+                WHERE member_id = ? AND status = 'ongoing'
+                """;
+        try (PreparedStatement ps = connection.prepareStatement(goalsSql)) {
+            ps.setInt(1, member_id);
+            try (ResultSet rs = ps.executeQuery()) {
+                System.out.println("Ongoing fitness goals:");
+                boolean any = false;
+                while (rs.next()) {
+                    any = true;
+                    System.out.printf("  id:%d type:%s target:%s start:%s end:%s%n",
+                        rs.getInt("goal_id"),
+                        rs.getString("goal_type"),
+                        rs.getObject("target"),
+                        rs.getDate("start_of_goal"),
+                        rs.getDate("end_of_goal")
+                    );
+                }
+                if (!any) System.out.println("  (none)");
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching fitness goals:");
+            System.err.println(e);
         }
     }
 }
