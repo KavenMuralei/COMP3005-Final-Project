@@ -186,7 +186,7 @@ public class Admin extends User{
                     while (day.isEmpty()||!valid) {
                         day = input.nextLine();
                         try {
-                            LocalDate.parse(day);
+                            date = LocalDate.parse(day);
                             valid = true;
                         } catch (Exception e) {
                             System.out.println("Day format invalid");
@@ -310,8 +310,9 @@ public class Admin extends User{
                     bookingIns.setDate(5, java.sql.Date.valueOf(date));
 
                     try{
-                        bookingIns.executeUpdate();
-                        booking_id = bookingIns.getResultSet().getInt("booking_id");
+                        ResultSet bookingRS = bookingIns.executeQuery();
+                        bookingRS.next();
+                        booking_id = bookingRS.getInt("booking_id");
                         System.out.println("Booking (ID #"+booking_id+") for new class session added");
                     }catch(Exception bookingAdd){
                         System.out.println("Cannot add new booking\n"+bookingAdd);
@@ -322,12 +323,13 @@ public class Admin extends User{
 
                 //Class Session
                 if(booking_id != -1) {
-                    String classSessionInsertQuery = "INSERT INTO ClassSession(class_id, group_id, booking_id) VALUES (?, ?, ?) FROM booking";
+                    String classSessionInsertQuery = "INSERT INTO ClassSession(class_id, group_id, booking_id) VALUES (?, ?, ?)";
                     try(PreparedStatement classSessionIns = connection.prepareStatement(classSessionInsertQuery)){
                         //Class Group Insert
                         Statement classGroup = connection.createStatement();
                         classGroup.execute("INSERT INTO ClassGroup (class_id, max_capacity) VALUES ('"+class_id+"','"+session_size+"') RETURNING group_id");
                         ResultSet classGroupRS = classGroup.getResultSet();
+                        classGroupRS.next();
                         int classGroup_id = classGroupRS.getInt("group_id");
 
                         classSessionIns.setInt(1, class_id);
