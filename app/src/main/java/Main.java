@@ -91,29 +91,26 @@ public class Main {
         return 0;
     }
 
-    private static int adminLoop(Connection connection, Scanner input) {
+     private static int adminLoop(Connection connection, Scanner input) {
         String option;
         loop: while (true) {
-            System.out.println("Please select operation:");
-            // TODO: Display options, maybe also add sub-menus
+            System.out.println("Please select an *Admin* operation:");
+            System.out.println("1. Room Booking");
+            System.out.println("2. Equipment Maintenance");
+            System.out.println("3. Class Management");
             option = input.nextLine();
             switch (option.toLowerCase()) {
-                case "change name":
-                    User.changeName(connection, input);
-                    break;
-                case "change email":
-                    User.changeEmail(connection, input);
-                    break;
-                case "change password":
-                    User.changePassword(connection, input);
-                    break;
-                case "logout":
-                    User.logout();
+                case "q", "quit":
                     break loop;
+                case "1", "room booking":
+                    Admin.roomBooking(connection, input);
+                    break;
+                case "2", "equipment maintenance":
+                case "3", "class management":
                 default:
                     System.out.println("Invalid input");
+                System.out.println("\n");
             }    
-            System.out.println("\n");
         }
         System.out.println("admin loop exited");
         return 0;
