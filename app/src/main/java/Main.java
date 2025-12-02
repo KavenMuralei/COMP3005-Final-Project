@@ -116,18 +116,25 @@ public class Main {
         String option;
         loop: while (true) {
             System.out.println("Please select an *Admin* operation:");
-            System.out.println("1. Room Booking");
-            System.out.println("2. Equipment Maintenance");
-            System.out.println("3. Class Management");
+            // System.out.println("1. Room Booking");
+            System.out.println("1. Equipment Maintenance");
+            System.out.println("2. Class Management");
+            System.out.println("3. Back");
+            System.out.println("------------------------------------------------");
+            System.out.print("Choose an option: ");
             option = input.nextLine();
             switch (option.toLowerCase()) {
                 case "q", "quit":
                     break loop;
-                case "1", "room booking":
-                    Admin.roomBooking(connection, input);
+                // case "1", "room booking":
+                //     Admin.roomBooking(connection, input);
+                //     break;
+                case "1", "equipment maintenance":
                     break;
-                case "2", "equipment maintenance":
-                case "3", "class management":
+                case "2", "class management":
+                    Admin.classManagement(connection, input);
+                    break;
+                case "3": User.logout(); System.out.println("You have been logged out."); return 0;
                 default:
                     System.out.println("Invalid input");
                 System.out.println("\n");
