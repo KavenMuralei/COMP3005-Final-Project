@@ -175,6 +175,76 @@ public class Admin extends User{
     }
 
     public static boolean equipmentMaintenece(Connection connection, Scanner input){
+        String confirm = "";
+        while(!confirm.toLowerCase().equals("yes")) {
+            try {
+                int equipment_id = -1, room_id = -1;
+                String status = "", description = "";
+                Statement equipmentQuery = connection.createStatement();
+                equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
+                ResultSet equipmentRS = equipmentQuery.getResultSet();
+
+                while (equipmentRS.next()) {
+                    System.out.println("(ID #" + equipmentRS.getInt("equipment_id") + ") Equpiment Name: " + equipmentRS.getString("name"));
+                }
+
+                boolean valid = false;
+                while (!valid) {
+                    System.out.println("Enter an equipment id: ");
+                    equipment_id = input.nextInt();
+                    while (equipmentRS.next()) {
+                        if (equipment_id == equipmentRS.getInt("equipment_id")) {
+                            valid = true;
+                            break;
+                        }
+                    }
+                    if (!valid) {
+                        System.out.println("No equipment with an ID that matches");
+                    }
+                }
+
+                Statement roomQuery = connection.createStatement();
+                roomQuery.execute("SELECT room_id,room_name FROM Room");
+                ResultSet roomRS = roomQuery.getResultSet();
+
+                while (roomRS.next()) {
+                    System.out.println("(ID #" + roomRS.getInt("room_id") + ") Room Name: " + roomRS.getString("room_name"));
+                }
+
+                valid = false;
+                while (!valid) {
+                    System.out.println("Enter a room id that the equipment is in: ");
+                    room_id = input.nextInt();
+                    while (roomRS.next()) {
+                        if (room_id == roomRS.getInt("room_id")) {
+                            valid = true;
+                            break;
+                        }
+                    }
+                    if (!valid) {
+                        System.out.println("No room with specified ID");
+                    }
+                }
+
+                while(status.isEmpty()){
+                    System.out.println("Enter the status of the equipment");
+                    status = input.nextLine();
+                }
+
+                while (description.isEmpty()) {
+                    System.out.println("Enter description of the status");
+                    description = input.nextLine();
+                }
+
+                while(!confirm.toLowerCase().equals("yes") && !confirm.toLowerCase().equals("no")){
+                    System.out.println("Equipment ID: "+equipment_id+", Room ID: "+room_id+"\n\nStatus: "+status+"\nDetails: "+description+"\n\nIs this correct> (yes or no)");
+                    confirm = input.nextLine();
+                }
+
+            } catch (Exception mainenanceLog) {
+                System.out.println("Issue recording maintenance log");
+            }
+        }
         return false;
     }
 
