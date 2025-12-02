@@ -1,8 +1,6 @@
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -400,6 +398,307 @@ public class Member extends User{
         } catch (Exception e) {
             System.out.println("Error retrieving health history:");
             System.out.println(e);
+        }
+    }
+    public static void managePTSession(Connection connection, Scanner input) {
+        System.out.println("Would you like to book, reschedule, or remove a PT session? (book/reschedule/remove, Enter to cancel):");
+        String action = input.nextLine().trim().toLowerCase();
+        if (action.isEmpty()) {
+            System.out.println("Operation cancelled.");
+            return;
+        }
+
+        try {
+            if (action.equals("book")) {
+                // Show trainer availabilities first
+                String availQuery = """
+                SELECT trainer_id, day, shift_start, shift_end
+                FROM TrainerAvailability
+                ORDER BY trainer_id, day, shift_start
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(availQuery);
+                     ResultSet rs = ps.executeQuery()) {
+                    System.out.println("===== Trainer Availabilities =====");
+                    while (rs.next()) {
+                        System.out.println("Trainer ID: " + rs.getInt("trainer_id")
+                                + " | Day: " + rs.getDate("day")
+                                + " | Shift: " + rs.getTime("shift_start") + " - " + rs.getTime("shift_end"));
+                    }
+                }
+
+                System.out.println("Enter trainer_id:");
+                int trainerId = Integer.parseInt(input.nextLine().trim());
+
+                System.out.println("Enter room_id:");
+                int roomId = Integer.parseInt(input.nextLine().trim());
+
+                System.out.println("Enter date (yyyy-MM-dd):");
+                LocalDate day = LocalDate.parse(input.nextLine().trim());
+
+                System.out.println("Enter start time (HH:mm):");
+                LocalTime startTime = LocalTime.parse(input.nextLine().trim());
+
+                System.out.println("Enter end time (HH:mm):");
+                LocalTime endTime = LocalTime.parse(input.nextLine().trim());
+
+
+                String availabilityQuery = """
+                SELECT 1 FROM TrainerAvailability
+                WHERE trainer_id = ? AND day = ?
+                  AND shift_start <= ? AND shift_end >= ?
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(availabilityQuery)) {
+                    ps.setInt(1, trainerId);
+                    ps.setDate(2, Date.valueOf(day));
+                    ps.setTime(3, Time.valueOf(startTime));
+                    ps.setTime(4, Time.valueOf(endTime));
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            System.out.println("Trainer not available at that time.");
+                            return;
+                        }
+                    }
+                }
+
+                String conflictQuery = """
+                SELECT 1 FROM Bookings
+                WHERE room_id = ? AND day = ?
+                  AND ((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?))
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(conflictQuery)) {
+                    ps.setInt(1, roomId);
+                    ps.setDate(2, Date.valueOf(day));
+                    ps.setTime(3, Time.valueOf(endTime));
+                    ps.setTime(4, Time.valueOf(startTime));
+                    ps.setTime(5, Time.valueOf(startTime));
+                    ps.setTime(6, Time.valueOf(endTime));
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            System.out.println("Room conflict detected.");
+                            return;
+                        }
+                    }
+                }
+
+                String bookingQuery = """
+                INSERT INTO Bookings (trainer_id, room_id, start_time, end_time, day)
+                VALUES (?, ?, ?, ?, ?)
+                RETURNING booking_id
+                """;
+                int bookingId;
+                try (PreparedStatement ps = connection.prepareStatement(bookingQuery)) {
+                    ps.setInt(1, trainerId);
+                    ps.setInt(2, roomId);
+                    ps.setTime(3, Time.valueOf(startTime));
+                    ps.setTime(4, Time.valueOf(endTime));
+                    ps.setDate(5, Date.valueOf(day));
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+                        bookingId = rs.getInt("booking_id");
+                    }
+                }
+
+
+                String ptQuery = """
+                INSERT INTO PTSession (member_id, booking_id, status)
+                VALUES (?, ?, 'scheduled')
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(ptQuery)) {
+                    ps.setInt(1, user_id);
+                    ps.setInt(2, bookingId);
+                    ps.executeUpdate();
+                }
+
+                System.out.println("PT session booked successfully!");
+
+            } else if (action.equals("reschedule") || action.equals("remove")) {
+
+                String sessionQuery = """
+                SELECT pt.pt_session_id, b.day, b.start_time, b.end_time, b.room_id, b.trainer_id
+                FROM PTSession pt
+                JOIN Bookings b ON b.booking_id = pt.booking_id
+                WHERE pt.member_id = ?
+                ORDER BY b.day, b.start_time
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(sessionQuery)) {
+                    ps.setInt(1, user_id);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        System.out.println("===== Your PT Sessions =====");
+                        boolean hasSessions = false;
+                        while (rs.next()) {
+                            hasSessions = true;
+                            System.out.println("Session ID: " + rs.getInt("pt_session_id")
+                                    + " | Trainer: " + rs.getInt("trainer_id")
+                                    + " | Room: " + rs.getInt("room_id")
+                                    + " | Date: " + rs.getDate("day")
+                                    + " | Time: " + rs.getTime("start_time") + " - " + rs.getTime("end_time"));
+                        }
+                        if (!hasSessions) {
+                            System.out.println("No PT sessions found.");
+                            return;
+                        }
+                    }
+                }
+
+                System.out.println("Enter pt_session_id to " + action + ":");
+                int ptSessionId = Integer.parseInt(input.nextLine().trim());
+
+                if (action.equals("reschedule")) {
+                    System.out.println("Enter new date (yyyy-MM-dd):");
+                    LocalDate newDay = LocalDate.parse(input.nextLine().trim());
+
+                    System.out.println("Enter new start time (HH:mm):");
+                    LocalTime newStart = LocalTime.parse(input.nextLine().trim());
+
+                    System.out.println("Enter new end time (HH:mm):");
+                    LocalTime newEnd = LocalTime.parse(input.nextLine().trim());
+
+                    String updateQuery = """
+                    UPDATE Bookings
+                    SET day = ?, start_time = ?, end_time = ?
+                    WHERE booking_id = (SELECT booking_id FROM PTSession WHERE pt_session_id = ? AND member_id = ?)
+                    """;
+                    try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
+                        ps.setDate(1, Date.valueOf(newDay));
+                        ps.setTime(2, Time.valueOf(newStart));
+                        ps.setTime(3, Time.valueOf(newEnd));
+                        ps.setInt(4, ptSessionId);
+                        ps.setInt(5, user_id);
+
+                        int rows = ps.executeUpdate();
+                        if (rows > 0) {
+                            System.out.println("PT session rescheduled successfully!");
+                        } else {
+                            System.out.println("No PT session found to reschedule.");
+                        }
+                    }
+
+                } else if (action.equals("remove")) {
+                    String deleteQuery = """
+                    DELETE FROM PTSession WHERE pt_session_id = ? AND member_id = ?
+                    """;
+                    try (PreparedStatement ps = connection.prepareStatement(deleteQuery)) {
+                        ps.setInt(1, ptSessionId);
+                        ps.setInt(2, user_id);
+
+                        int rows = ps.executeUpdate();
+                        if (rows > 0) {
+                            System.out.println("PT session removed successfully!");
+                        } else {
+                            System.out.println("No PT session found to remove.");
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Invalid choice. Please type 'book', 'reschedule', or 'remove'.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error managing PT session:");
+            System.out.println(e);
+        }
+    }
+    public static void registerForGroupClass(Connection connection, Scanner input) {
+        try {
+            // Step 1: Show available group classes with capacity info
+            String classQuery = """
+            SELECT cg.group_id, c.name AS class_name, cg.max_capacity,
+                   COUNT(jg.member_id) AS registered_count
+            FROM ClassGroup cg
+            JOIN Class c ON c.class_id = cg.class_id
+            LEFT JOIN Join_Group jg ON cg.group_id = jg.group_id
+            GROUP BY cg.group_id, c.name, cg.max_capacity
+            ORDER BY cg.group_id
+            """;
+
+            try (PreparedStatement ps = connection.prepareStatement(classQuery);
+                 ResultSet rs = ps.executeQuery()) {
+                System.out.println("===== Available Group Classes =====");
+                boolean hasClasses = false;
+                while (rs.next()) {
+                    hasClasses = true;
+                    int groupId = rs.getInt("group_id");
+                    String className = rs.getString("class_name");
+                    int maxCapacity = rs.getInt("max_capacity");
+                    int registered = rs.getInt("registered_count");
+
+                    System.out.println("Group ID: " + groupId
+                            + " | Class: " + className
+                            + " | Capacity: " + registered + "/" + maxCapacity);
+                }
+                if (!hasClasses) {
+                    System.out.println("No group classes scheduled.");
+                    return;
+                }
+            }
+
+            // Step 2: Ask which group to register for
+            System.out.println("Enter group_id to register (or press Enter to cancel):");
+            String inputGroup = input.nextLine().trim();
+            if (inputGroup.isEmpty()) {
+                System.out.println("Operation cancelled.");
+                return;
+            }
+            int groupId = Integer.parseInt(inputGroup);
+
+            // Step 3: Check capacity
+            String capacityQuery = """
+            SELECT cg.max_capacity, COUNT(jg.member_id) AS registered_count
+            FROM ClassGroup cg
+            LEFT JOIN Join_Group jg ON cg.group_id = jg.group_id
+            WHERE cg.group_id = ?
+            GROUP BY cg.max_capacity
+            """;
+            try (PreparedStatement ps = connection.prepareStatement(capacityQuery)) {
+                ps.setInt(1, groupId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        int maxCapacity = rs.getInt("max_capacity");
+                        int registered = rs.getInt("registered_count");
+                        if (registered >= maxCapacity) {
+                            System.out.println("Class group is full. Cannot register.");
+                            return;
+                        }
+                    } else {
+                        System.out.println("Invalid group_id.");
+                        return;
+                    }
+                }
+            }
+
+            // Step 4: Check if already registered
+            String checkQuery = """
+            SELECT 1 FROM Join_Group WHERE member_id = ? AND group_id = ?
+            """;
+            try (PreparedStatement ps = connection.prepareStatement(checkQuery)) {
+                ps.setInt(1, user_id);
+                ps.setInt(2, groupId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        System.out.println("You are already registered for this group class.");
+                        return;
+                    }
+                }
+            }
+
+            // Step 5: Register
+            String insertQuery = """
+            INSERT INTO Join_Group (group_id, member_id, enrollment_date)
+            VALUES (?, ?, CURRENT_DATE)
+            """;
+            try (PreparedStatement ps = connection.prepareStatement(insertQuery)) {
+                ps.setInt(1, groupId);
+                ps.setInt(2, user_id);
+                ps.executeUpdate();
+                System.out.println("Successfully registered for group class " + groupId + "!");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error registering for group class:");
+            e.printStackTrace();
         }
     }
 }

@@ -45,6 +45,12 @@ public class Main {
                 case "view health history":
                     Member.viewHealthHistory(connection);
                     break;
+                case "manage pt sessions":
+                    Member.managePTSession(connection, input);
+                    break;
+                case "class registration":
+                    Member.registerForGroupClass(connection, input);
+                    break;
                 default:
                     System.out.println("Invalid input");
             }    
@@ -79,6 +85,8 @@ public class Main {
                 case "search member":
                     Trainer.searchMember(connection, input);
                     break;
+
+
                 case "logout":
                     User.logout();
                     break loop;
