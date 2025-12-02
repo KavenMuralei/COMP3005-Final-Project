@@ -170,8 +170,7 @@ LEFT JOIN LATERAL (
     ORDER BY time DESC
     LIMIT 1
 ) hm ON TRUE
-LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id
-WHERE fg.status = 'ongoing';
+LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id;
 
 
 -- trigger for health metric to fitness goal completion
