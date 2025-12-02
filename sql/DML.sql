@@ -50,3 +50,19 @@ WITH new_user AS (
 )
 INSERT INTO Admin(admin_id)
 SELECT user_id FROM new_user;
+
+-- rooms
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('Room 201', 30, 'First floor near reception');
+
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('Room 307', 20, 'Second floor yoga room');
+
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('Room 102', 25, 'Basement strength training room');
+
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('Room 202', 40, 'First floor kick boxing room');
+
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('Room 405', 15, 'Third floor wellness room');

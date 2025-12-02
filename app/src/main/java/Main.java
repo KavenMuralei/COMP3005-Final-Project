@@ -3,103 +3,115 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 public class Main {
-    private static int memberLoop(Connection connection, Scanner input) {String option;
-        loop: while (true) {
-            System.out.println("Please select operation:");
-            // TODO: Display options, maybe also add sub-menus
-            option = input.nextLine();
-            switch (option.toLowerCase()) {
-                case "change name":
-                    User.changeName(connection, input);
-                    break;
-                case "change email":
-                    User.changeEmail(connection, input);
-                    break;
-                case "change password":
-                    User.changePassword(connection, input);
-                    break;
-                case "change phone number":
-                    Member.changePhoneNumber(connection, input);
-                    break;
-                case "Change date of birth":
-                    Member.changeDoB(connection, input);
-                    break;
-                case "change gender":
-                    Member.changeGender(connection, input);
-                    break;
-                case "logout":
-                    User.logout();
-                    break loop;
-                case "dashboard":
-                    Member.dashboard(connection);
-                    break;
-                case "add fitness goal":
-                    Member.addFitnessGoal(connection, input);
-                    break;
-                case "manage fitness goals":
-                    Member.manageFitnessGoals(connection, input);
-                    break;
-                case "manage health metrics":
-                    Member.manageHealthMetrics(connection, input);
-                    break;
-                case "view health history":
-                    Member.viewHealthHistory(connection);
-                    break;
-                case "manage pt sessions":
-                    Member.managePTSession(connection, input);
-                    break;
-                case "class registration":
-                    Member.registerForGroupClass(connection, input);
-                    break;
+    private static void memberLoop(Connection connection, Scanner input) {
+        while (true) {
+            System.out.println("Member selection Options:");
+            System.out.println("1. Profile Management");
+            System.out.println("2. Health History");
+            System.out.println("3. Dashboard");
+            System.out.println("4. PT Session Scheduling");
+            System.out.println("5. Group Class Registration");
+            System.out.println("6. Logout");
+            System.out.println("------------------------------------------------");
+            System.out.print("Select an option: ");
+
+            String option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    while (true) {
+                        System.out.println("Profile Management Options:");
+                        System.out.println("1. Change Name");
+                        System.out.println("2. Change Email");
+                        System.out.println("3. Change Password");
+                        System.out.println("4. Change Phone Number");
+                        System.out.println("5. Change Date of Birth");
+                        System.out.println("6. Change Gender");
+                        System.out.println("7. Add Fitness Goal");
+                        System.out.println("8. Manage Fitness Goals");
+                        System.out.println("9. Add/Update Health Metrics");
+                        System.out.println("10. Back");
+                        System.out.println("------------------------------------------------");
+                        System.out.print("Choose an option: ");
+
+                        String pm = input.nextLine();
+
+                        switch (pm) {
+                            case "1": User.changeName(connection, input); break;
+                            case "2": User.changeEmail(connection, input); break;
+                            case "3": User.changePassword(connection, input); break;
+                            case "4": Member.changePhoneNumber(connection, input); break;
+                            case "5": Member.changeDoB(connection, input); break;
+                            case "6": Member.changeGender(connection, input); break;
+                            case "7": Member.addFitnessGoal(connection, input); break;
+                            case "8": Member.manageFitnessGoals(connection, input); break;
+                            case "9": Member.manageHealthMetrics(connection, input); break;
+                            case "10": continue;  // Back to main menu
+                            default:
+                                System.out.println("Invalid option.");
+                        }
+                    }
+                case "2": Member.viewHealthHistory(connection); break;
+                case "3": Member.dashboard(connection); break;
+                case "4": Member.managePTSession(connection, input); break;
+                case "5": Member.registerForGroupClass(connection, input);break;
+                case "6": User.logout(); System.out.println("You have been logged out."); return;
+
                 default:
-                    System.out.println("Invalid input");
-            }    
-            System.out.println("\n");
+                    System.out.println("Invalid selection.");
+            }
         }
-        System.out.println("member loop exited");
-        return 0;
     }
 
-    private static int trainerLoop(Connection connection, Scanner input) {
-        String option;
-        loop: while (true) {
-            System.out.println("Please select operation:");
-        // TODO: Display options, maybe also add sub-menus
-            option = input.nextLine();
-            switch (option.toLowerCase()) {
-                case "change name":
-                    User.changeName(connection, input);
-                    break;
-                case "change email":
-                    User.changeEmail(connection, input);
-                    break;
-                case "change password":
-                    User.changePassword(connection, input);
-                    break;
-                case "display schedule":
-                    Trainer.displaySchedule(connection);
-                    break;
-                case "set availability":
-                    Trainer.setAvailability(connection, input);
-                    break;
-                case "search member":
-                    Trainer.searchMember(connection, input);
-                    break;
 
+    private static void trainerLoop(Connection connection, Scanner input) {
 
-                case "logout":
-                    User.logout();
-                    break loop;
-                default:
-                    System.out.println("Invalid input");
-            }    
-            System.out.println("\n");
+        while (true) {
+            System.out.println("Trainer selection Options:");
+            System.out.println("1. Profile Management");
+            System.out.println("2. Set Availability");
+            System.out.println("3. Schedule View");
+            System.out.println("4. Member Lookup");
+            System.out.println("5. Logout");
+            System.out.println("------------------------------------------------");
+            System.out.print("Select an option: ");
+
+            String option = input.nextLine();
+
+            switch (option) {
+
+                case "1":
+                    while (true) {
+                        System.out.println("Profile Management Options:");
+                        System.out.println("1. Change Name");
+                        System.out.println("2. Change Email");
+                        System.out.println("3. Change Password");
+                        System.out.println("4. Back");
+                        System.out.println("------------------------------------------------");
+                        System.out.print("Choose an option: ");
+
+                        String pm = input.nextLine();
+
+                        switch (pm) {
+                            case "1": User.changeName(connection, input); break;
+                            case "2": User.changeEmail(connection, input); break;
+                            case "3": User.changePassword(connection, input); break;
+                            case "4": continue; 
+                            default:
+                                System.out.println("Invalid option.");
+                        }
+                    }
+                case "2": Trainer.setAvailability(connection, input);break;
+                case "3": Trainer.displaySchedule(connection);break;
+                case "4": Trainer.searchMember(connection, input);break;
+                case "5": User.logout(); System.out.println("You have been logged out."); return;
+                default: System.out.println("Invalid selection.");
+            }
         }
-        System.out.println("trainer loop exited");
-        return 0;
     }
 
-     private static int adminLoop(Connection connection, Scanner input) {
+
+    private static int adminLoop(Connection connection, Scanner input) {
         String option;
         loop: while (true) {
             System.out.println("Please select an *Admin* operation:");
