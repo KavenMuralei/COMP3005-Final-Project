@@ -4,23 +4,174 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Admin extends User{
-    public static boolean roomBooking(Connection connection, Scanner input){
+    public static int roomBooking(Connection connection, Scanner input, Date day, Time start, Time end){
+        int room_id = -1;
         try{
-            String room_id = "";
-            System.out.println("Please enter the Room ID you would like to book");
-            while (room_id.isEmpty()) {
-                room_id = input.nextLine();
+
+            String query = """
+                    SELECT room_id, room_name, capacity
+                    FROM Room
+                    """;
+            
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    boolean any = false;
+
+                    while(rs.next()) {
+                        System.out.println(String.format("Room_id: %d, %s, Max capacity: %d", rs.getInt("room_id"), rs.getString("room_name"),  rs.getInt("capacity")));
+                        any = true;
+                    }
+                    if(!any) {
+                        System.out.println("No rooms exists");
+                        return -1;
+                    }
+
+                    boolean valid = false;
+                    System.out.println("Select which room you want to book.");
+                    while(room_id < 0 || !valid) {
+                        try {
+                            room_id = input.nextInt();
+                            valid = true;
+                        } catch (Exception e) {
+                            System.out.println("Please enter the room ID.");
+                        }
+                    }
+                    
+                }
             }
-//            Statement statement = connection.createStatement();
-//            statement.execute(
-//                    "INSERT INTO bookings (first_name, last_name, email, enrollment_date) " +
-//                        "VALUES ('" + first_name + "', '" + last_name + "', '" + email + "', '" + enrollment_date + "');"
-//            );
+
+            //boolean valid = false;
+            // System.out.println("Please enter the Room ID you would like to book");
+            // while (room_id < 0 || !valid) {
+            //     try {
+            //         room_id = input.nextInt();
+            //         valid = true;
+            //     } catch (Exception e) {
+            //         System.out.println("Please enter a number");
+            //     }
+            // }
+            // Date day = Date.valueOf("0001:01:01");
+            // Time start = Time.valueOf("0:01"), end = Time.valueOf("0:01");
+
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What day would you like to book?");
+            //     try {
+            //         day = Date.valueOf(input.nextLine());
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter date in format yyyy-mm-dd");
+            //     }
+            // }
+            // DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("H:mm");
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What time would you like to start?");
+            //     try {
+            //         start = LocalTime.parse(input.nextLine(), timeFmt);
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter time in format hh:mm");
+            //     }
+            // }
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What time would you like to end?");
+            //     try {
+            //         end = LocalTime.parse(input.nextLine(), timeFmt);
+            //         if(end.isBefore(start)) {
+            //             System.out.println("End time cannot be before start time");
+            //             continue;
+            //         }
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter time in format hh:mm");
+            //     }
+            // }
+
+            // if(!Room.available(room_id, day, start, end, connection, input)) {
+            //     System.out.println("Room unavailable");
+            //     return -1;
+            // }
+            
+            // query = """
+            //         SELECT booking_id, start_time, end_time, day
+            //         FROM bookings
+            //         """;
+
+            // int booking_id = -1;
+            
+            // try (PreparedStatement ps = connection.prepareStatement(query)){
+            //     ResultSet rs = ps.executeQuery();
+                
+            //     boolean any = false;
+            //     while(rs.next()) {
+            //         System.out.println(String.format("Booking ID: %d, %s at %s to %s", rs.getInt("booking_id"), rs.getString("day"), rs.getString("start_time"),rs.getString("end_time")));
+            //         any = true;
+            //     }
+            //     if(!any) {
+            //         System.out.println("There are no bookings to chose from.");
+            //         return -1;
+            //     }
+
+            //     System.out.println("Which booking would you like to add the room?");
+            //     valid = false;
+            //     while(booking_id < 0 || !valid) {
+            //         try {
+            //             booking_id = input.nextInt();
+            //             valid = true;
+            //         } catch (Exception e) {
+            //             System.out.println("Please enter booking ID");
+            //         }
+            //     }
+            //     query = """
+            //             SELECT start_time, end_time, day
+            //             FROM BOOKING 
+            //             WHERE boooking_id = ?
+            //             """;
+            //     try (PreparedStatement ps2 = connection.prepareStatement(query)){
+            //         ps2.setInt(1, booking_id);
+            //         try (ResultSet rs2 = ps.executeQuery()) {
+            //             if(!rs2.next()) throw new Exception("Booking not found");
+
+            //             start = rs.getTime("start_time");
+            //             end = rs.getTime("end_time");
+            //             day = rs.getDate("day");
+            //         } catch (Exception e) {
+            //             System.err.println("Error getting booking:");
+            //             System.err.println(e);
+            //             return -1;
+            //         }
+            //     } 
+            // }
+
+            if(!Room.available(room_id, day, start, end, connection, input)) {
+                System.out.println("Room is unavailable");
+                return -1;
+            }
+
+            // query = """
+            //         UPDATE bookings
+            //         SET room_id = ?
+            //         WHERE booking_id = ?
+            //         """;
+            
+            // try (PreparedStatement ps = connection.prepareStatement(query)) {
+            //     ps.setInt(1, room_id);
+            //     ps.setInt(2, booking_id);
+            //     ps.executeUpdate();
+            // }
+
         }
         catch(Exception e){
-            System.out.println("Error Booking Room");
+            System.err.println("Error Booking Room");
+            System.err.println(e);
+            return -1;
         }
-        return false;
+        return room_id;
     }
 
     public static boolean equipmentMaintenece(Connection connection, Scanner input){
@@ -304,7 +455,7 @@ public class Admin extends User{
 
                     //Booking Session
                     bookingIns.setInt(1, trainer_id);
-                    bookingIns.setInt(2, -1);
+                    bookingIns.setInt(2, roomBooking(connection, input, java.sql.Date.valueOf(date), java.sql.Time.valueOf(st), java.sql.Time.valueOf(et)));
                     bookingIns.setTime(3, java.sql.Time.valueOf(st));
                     bookingIns.setTime(4, java.sql.Time.valueOf(et));
                     bookingIns.setDate(5, java.sql.Date.valueOf(date));

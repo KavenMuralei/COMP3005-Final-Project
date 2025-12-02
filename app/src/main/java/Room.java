@@ -9,7 +9,7 @@ public class Room {
     public static boolean available(int room_id, Date day, Time start_time, Time end_time, Connection connection, Scanner input) {
         String query = """
                 SELECT start_time, end_time
-                FROM Booking
+                FROM Bookings
                 WHERE room_id = ? AND day = ?
                 """;
         
