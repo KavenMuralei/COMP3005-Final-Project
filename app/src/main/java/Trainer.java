@@ -264,7 +264,7 @@ public class Trainer extends User{
 
         // Ongoing fitness goals
         String goalsSql = """
-                SELECT goal_id, goal_type, target, start_of_goal, end_of_goal
+                SELECT goal_type, target
                 FROM FitnessGoal
                 WHERE member_id = ? AND status = 'ongoing'
                 """;
@@ -275,12 +275,9 @@ public class Trainer extends User{
                 boolean any = false;
                 while (rs.next()) {
                     any = true;
-                    System.out.printf("  id:%d type:%s target:%s start:%s end:%s%n",
-                        rs.getInt("goal_id"),
+                    System.out.printf("  type:%s target:%s",
                         rs.getString("goal_type"),
-                        rs.getObject("target"),
-                        rs.getDate("start_of_goal"),
-                        rs.getDate("end_of_goal")
+                        rs.getObject("target")
                     );
                 }
                 if (!any) System.out.println("  (none)");
