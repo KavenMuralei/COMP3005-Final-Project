@@ -118,21 +118,19 @@ public class Member extends User{
                     return;
                 }
 
-                System.out.println("===== DASHBOARD =====");
+                System.out.println("Member dashboard:");
+
 
                 boolean printedHeader = false;
 
                 while (rs.next()) {
                     if (!printedHeader) {
-                        System.out.println("Name: "
-                                + rs.getString("first_name") + " "
-                                + rs.getString("last_name"));
-
-                        System.out.println("Latest Weight (kg): " + rs.getObject("latest_weight"));
-                        System.out.println("Latest Height (cm): " + rs.getObject("latest_height"));
-                        System.out.println("Latest Bodyfat: " + rs.getObject("latest_bodyfat"));
-                        System.out.println("Latest BPM: " + rs.getObject("latest_bpm"));
-                        System.out.println("Last Metric Time: " + rs.getTimestamp("last_metric_time"));
+                        System.out.println("Name: " + rs.getString("first_name") + " " + rs.getString("last_name"));
+                        System.out.println("Latest Weight (kg): " + safeValue(rs.getObject("latest_weight")));
+                        System.out.println("Latest Height (cm): " + safeValue(rs.getObject("latest_height")));
+                        System.out.println("Latest Bodyfat (%): " + safeValue(rs.getObject("latest_bodyfat")));
+                        System.out.println("Latest BPM: " + safeValue(rs.getObject("latest_bpm")));
+                        System.out.println("Last Metric Time: " + safeValue(rs.getTimestamp("last_metric_time")));
                         System.out.println("Total Classes Joined: " + rs.getInt("total_classes_joined"));
                         System.out.println("Active Goals:");
                         printedHeader = true;
@@ -140,15 +138,23 @@ public class Member extends User{
 
                     // Print each active goal
                     System.out.println(" - " + rs.getString("goal_type")
-                            + " | Target: " + rs.getObject("target")
+                            + " | Target: " + safeValue(rs.getObject("target"))
                             + " | Status: " + rs.getString("goal_status"));
                 }
+
+                System.out.println("==================================");
+
             }
 
         } catch (Exception e) {
             System.out.println("Error retrieving dashboard:");
-            System.out.println(e);
+            e.printStackTrace();
         }
+    }
+
+    //helper to handle null values
+    private static String safeValue(Object value) {
+        return (value == null) ? "N/A" : value.toString();
     }
 
     public static void addFitnessGoal(Connection connection, Scanner input) {
@@ -196,19 +202,19 @@ public class Member extends User{
         Integer bpm = null;
 
         try {
-            System.out.println("Enter weight in kilograms (or press Enter to skip):");
+            System.out.println("Enter weight in kilograms:");
             String w = input.nextLine().trim();
             if (!w.isEmpty()) weight = Double.parseDouble(w);
 
-            System.out.println("Enter height (or press Enter to skip):");
+            System.out.println("Enter height:");
             String h = input.nextLine().trim();
             if (!h.isEmpty()) height = Double.parseDouble(h);
 
-            System.out.println("Enter bodyfat percentage (or press Enter to skip):");
+            System.out.println("Enter bodyfat percentage:");
             String b = input.nextLine().trim();
             if (!b.isEmpty()) bodyfat = Double.parseDouble(b);
 
-            System.out.println("Enter BPM (or press Enter to skip):");
+            System.out.println("Enter BPM:");
             String r = input.nextLine().trim();
             if (!r.isEmpty()) bpm = Integer.parseInt(r);
 
