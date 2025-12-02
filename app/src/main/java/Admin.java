@@ -245,6 +245,17 @@ public class Admin extends User{
                     confirm = input.nextLine();
                 }
 
+                String maintenanceQuery = "INSERT INTO Maintenance (equipment_id, room_id, status, issue_description) VALUES (?, ?, ?, ?)";
+                try(PreparedStatement maintenanceIns = connection.prepareStatement(maintenanceQuery)){
+                    maintenanceIns.setInt(1, equipment_id);
+                    maintenanceIns.setInt(2,room_id);
+                    maintenanceIns.setString(3, status);
+                    maintenanceIns.setString(4, description);
+                    maintenanceIns.executeUpdate();
+                    System.out.println("Inserted new maintenance record for equipment");
+                }catch(Exception maintenanceInsert){
+                    System.out.println("Cannot insert maintenance record");
+                }
             } catch (Exception mainenanceLog) {
                 System.out.println("Issue recording maintenance log");
             }
