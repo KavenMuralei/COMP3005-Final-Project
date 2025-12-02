@@ -135,6 +135,9 @@ CREATE TABLE IF NOT EXISTS Maintenance (
     status VARCHAR(255) NOT NULL DEFAULT 'reported'
 );
 
+CREATE INDEX IF NOT EXISTS name_index ON "User" (
+    lower(first_name), lower(last_name)
+);
 
 -- member dashboard operation (view)
 CREATE OR REPLACE VIEW member_dashboard_view AS
@@ -169,3 +172,4 @@ LEFT JOIN LATERAL (
 ) hm ON TRUE
 LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id
 WHERE fg.status = 'ongoing';
+
