@@ -173,3 +173,73 @@ LEFT JOIN LATERAL (
 LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id
 WHERE fg.status = 'ongoing';
 
+
+-- trigger for health metric to fitness goal completion
+CREATE OR REPLACE FUNCTION update_goal_on_metric()
+RETURNS TRIGGER AS $$
+DECLARE
+    goal_target NUMERIC;
+    goal_type TEXT;
+BEGIN
+    SELECT target, goal_type
+    INTO goal_target, goal_type
+    FROM FitnessGoal
+    WHERE member_id = NEW.member_id
+      AND status = 'ongoing'
+    LIMIT 1;
+
+    IF NOT FOUND THEN
+        RETURN NEW; -- no goal
+    END IF;
+
+    -- weight check
+    IF goal_type = 'weight' AND NEW.weight IS NOT NULL THEN
+        IF NEW.weight <= goal_target THEN
+            UPDATE FitnessGoal
+            SET status = 'completed',
+                end_of_goal = CURRENT_DATE
+            WHERE member_id = NEW.member_id
+              AND status = 'ongoing';
+        END IF;
+    END IF;
+
+    -- body fat check
+    IF goal_type = 'bodyfat' AND NEW.bodyfat_percent IS NOT NULL THEN
+        IF NEW.bodyfat_percent <= goal_target THEN
+            UPDATE FitnessGoal
+            SET status = 'completed',
+                end_of_goal = CURRENT_DATE
+            WHERE member_id = NEW.member_id
+              AND status = 'ongoing';
+        END IF;
+    END IF;
+
+    -- height check
+    IF goal_type = 'height' AND NEW.height_cm IS NOT NULL THEN
+        IF NEW.height_cm >= goal_target THEN
+            UPDATE FitnessGoal
+            SET status = 'completed',
+                end_of_goal = CURRENT_DATE
+            WHERE member_id = NEW.member_id
+              AND status = 'ongoing';
+        END IF;
+    END IF;
+
+    -- bpm check
+    IF goal_type = 'bpm' AND NEW.bpm IS NOT NULL THEN
+        IF NEW.bpm <= goal_target THEN
+            UPDATE FitnessGoal
+            SET status = 'completed',
+                end_of_goal = CURRENT_DATE
+            WHERE member_id = NEW.member_id
+              AND status = 'ongoing';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER check_goal_completion
+AFTER INSERT ON HealthMetric
+FOR EACH ROW
+EXECUTE FUNCTION update_goal_on_metric();
