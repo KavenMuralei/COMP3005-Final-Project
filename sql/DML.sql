@@ -62,7 +62,7 @@ INSERT INTO Room (room_name, capacity, location_details)
 VALUES ('Room 102', 25, 'Basement strength training room');
 
 INSERT INTO Room (room_name, capacity, location_details)
-VALUES ('Strength Training Room', 40, 'First floor kick boxing room');
+VALUES ('Room 202', 40, 'First floor kick boxing room');
 
 INSERT INTO Room (room_name, capacity, location_details)
 VALUES ('Room 405', 15, 'Third floor wellness room');
