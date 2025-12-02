@@ -43,6 +43,7 @@ public class Main {
     }
 
     private static int trainerLoop(Connection connection, Scanner input) {
+        Trainer.fetchTrainerId(connection);
         String option;
         loop: while (true) {
             System.out.println("Please select operation:");
@@ -57,6 +58,12 @@ public class Main {
                     break;
                 case "change password":
                     User.changePassword(connection, input);
+                    break;
+                case "display schedule":
+                    Trainer.displaySchedule(connection);
+                    break;
+                case "set availability":
+                    Trainer.setAvailability(connection, input);
                     break;
                 case "logout":
                     // TODO: Implement logout function for user type
