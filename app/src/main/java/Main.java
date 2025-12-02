@@ -40,7 +40,7 @@ public class Main {
                     Member.manageFitnessGoals(connection, input);
                     break;
                 case "manage health metrics":
-                    Member.manageHealthMetric(connection, input);
+                    Member.manageHealthMetrics(connection, input);
                     break;
                 case "view health history":
                     Member.viewHealthHistory(connection);
