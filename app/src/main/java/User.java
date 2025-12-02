@@ -93,8 +93,8 @@ public class User {
                     VALUES (?, ?, ?, ?, 0) 
                     RETURNING user_id
                 )
-                INSERT INTO Member(phone_number, date_of_birth, gender, user_id)
-                SELECT ?, ?, ?, user_id FROM new_user;
+                INSERT INTO Member(member_id, phone_number, date_of_birth, gender)
+                SELECT user_id, ?, ?, ? FROM new_user;
                 """;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, f_name);
