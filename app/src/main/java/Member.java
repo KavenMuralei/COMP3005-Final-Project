@@ -410,7 +410,7 @@ public class Member extends User{
 
         try {
             if (action.equals("book")) {
-                // Show trainer availabilities first
+                
                 String availQuery = """
                 SELECT trainer_id, day, shift_start, shift_end
                 FROM TrainerAvailability
@@ -668,8 +668,6 @@ public class Member extends User{
                     }
                 }
             }
-
-            // Step 4: Check if already registered
             String checkQuery = """
             SELECT 1 FROM Join_Group WHERE member_id = ? AND group_id = ?
             """;
