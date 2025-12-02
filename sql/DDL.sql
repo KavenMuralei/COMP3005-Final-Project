@@ -134,3 +134,38 @@ CREATE TABLE IF NOT EXISTS Maintenance (
     issue_description TEXT,
     status VARCHAR(255) NOT NULL DEFAULT 'reported'
 );
+
+
+-- member dashboard operation (view)
+CREATE OR REPLACE VIEW member_dashboard_view AS
+SELECT 
+    m.member_id,
+    u.first_name,
+    u.last_name,
+
+    hm.weight AS latest_weight,
+    hm.height_cm AS latest_height,
+    hm.bodyfat_percent AS latest_bodyfat,
+    hm.bpm AS latest_bpm,
+    hm.time AS last_metric_time,
+
+    fg.goal_type,
+    fg.target,
+    fg.status AS goal_status,
+
+    (
+        SELECT COUNT(*)
+        FROM Join_Group jg
+        WHERE jg.member_id = m.member_id
+    ) AS total_classes_joined
+
+FROM Member m
+JOIN "User" u ON u.user_id = m.member_id
+LEFT JOIN LATERAL (
+    SELECT * FROM HealthMetric
+    WHERE member_id = m.member_id
+    ORDER BY time DESC
+    LIMIT 1
+) hm ON TRUE
+LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id
+WHERE fg.status = 'ongoing';
