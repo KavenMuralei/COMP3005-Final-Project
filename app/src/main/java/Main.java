@@ -132,7 +132,7 @@ public class Main {
                         case 0 -> memberLoop(connection, input);
                         case 1 -> trainerLoop(connection, input);
                         case 2 -> adminLoop(connection, input);
-                    
+                        case -1 -> System.out.println("Wrong username or password.");
                         default -> {
                             System.out.println("Error, unexpected user type");
                             break loop;
