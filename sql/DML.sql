@@ -1,5 +1,5 @@
 --members
-ITH new_user AS (
+WITH new_user AS (
   INSERT INTO "User"(first_name, last_name, email, user_password, user_type)
   VALUES ('Dean','Sabbah','deansabbah@cmail.carleton.ca', 'password', 0)
   RETURNING user_id
@@ -43,10 +43,10 @@ INSERT INTO Admin(admin_id)
 SELECT user_id FROM new_user;
 
 -- rooms
-INSERT INTO Room (room_id, room_name, capacity, location_details)
-VALUES (-1,'UNASSIGNED', 15, 'N/A');
+INSERT INTO Room (room_name, capacity, location_details)
+VALUES ('UNASSIGNED', 15, 'N/A');
 
-INSERT INTO Room (room_id, room_name, capacity, location_details)
+INSERT INTO Room (room_name, capacity, location_details)
 VALUES ('Room 201', 30, 'First floor near reception');
 
 INSERT INTO Room (room_name, capacity, location_details)

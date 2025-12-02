@@ -130,6 +130,7 @@ public class Main {
                 //     Admin.roomBooking(connection, input);
                 //     break;
                 case "1", "equipment maintenance":
+                    Admin.equipmentMaintenece(connection, input);
                     break;
                 case "2", "class management":
                     Admin.classManagement(connection, input);
