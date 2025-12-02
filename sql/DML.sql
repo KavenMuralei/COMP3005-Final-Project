@@ -52,7 +52,10 @@ INSERT INTO Admin(admin_id)
 SELECT user_id FROM new_user;
 
 -- rooms
-INSERT INTO Room (room_name, capacity, location_details)
+INSERT INTO Room (room_id, room_name, capacity, location_details)
+VALUES (-1,'UNASSIGNED', 15, 'N/A');
+
+INSERT INTO Room (room_id, room_name, capacity, location_details)
 VALUES ('Room 201', 30, 'First floor near reception');
 
 INSERT INTO Room (room_name, capacity, location_details)

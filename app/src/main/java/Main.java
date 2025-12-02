@@ -51,6 +51,7 @@ public class Main {
                                 System.out.println("Invalid option.");
                         }
                     }
+                    break;
                 case "2": Member.viewHealthHistory(connection); break;
                 case "3": Member.dashboard(connection); break;
                 case "4": Member.managePTSession(connection, input); break;
@@ -79,9 +80,8 @@ public class Main {
             String option = input.nextLine();
 
             switch (option) {
-
                 case "1":
-                    while (true) {
+                    loop: while (true) {
                         System.out.println("Profile Management Options:");
                         System.out.println("1. Change Name");
                         System.out.println("2. Change Email");
@@ -96,11 +96,12 @@ public class Main {
                             case "1": User.changeName(connection, input); break;
                             case "2": User.changeEmail(connection, input); break;
                             case "3": User.changePassword(connection, input); break;
-                            case "4": continue; 
+                            case "4": break loop;
                             default:
                                 System.out.println("Invalid option.");
                         }
                     }
+                    break;
                 case "2": Trainer.setAvailability(connection, input);break;
                 case "3": Trainer.displaySchedule(connection);break;
                 case "4": Trainer.searchMember(connection, input);break;
