@@ -1,13 +1,45 @@
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Admin extends User{
     public static boolean roomBooking(Connection connection, Scanner input){
         try{
             int room_id = -1;
+
+            String query = """
+                    SELECT room_id, room_name
+                    FROM Room
+                    """;
+            
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    boolean any = false;
+
+                    while(rs.next()) {
+                        System.out.println(String.format("Room_id: %d, %s", rs.getInt("room_id"), rs.getString("room_name")));
+                        any = true;
+                    }
+                    if(!any) {
+                        System.out.println("No rooms exists");
+                        return false;
+                    }
+
+                    boolean valid = false;
+                    System.out.println("Select which room you want to book.");
+                    while(room_id < 0 || !valid) {
+                        try {
+                            room_id = input.nextInt();
+                            valid = true;
+                        } catch (Exception e) {
+                            System.out.println("Please enter the room ID.");
+                        }
+                    }
+                    
+                }
+            }
+
             boolean valid = false;
             // System.out.println("Please enter the Room ID you would like to book");
             // while (room_id < 0 || !valid) {
@@ -65,7 +97,7 @@ public class Admin extends User{
                 return false;
             }
             
-            String query = """
+            query = """
                     SELECT booking_id, start_time, end_time, day
                     FROM bookings
                     """;
