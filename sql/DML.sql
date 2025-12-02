@@ -1,16 +1,3 @@
--- INSERT INTO Users (first_name, last_name, email, password, date_of_birth, gender, role)
--- VALUES
--- ('kaven', 'mura', 'kavenmura@gmail.com', 'pass', '2005-07-26', 'male', 'admin'),
--- ('test1', 'test11', 'test1@test.com', 'test1pass', '1900-01-01', 'female', 'trainer'),
--- ('test2', 'test22', 'test2@test.com', 'test2pass', '1900-01-01', 'other', 'member');
-
-
--- INSERT INTO Members (member_id) VALUES (1);
--- INSERT INTO Trainers (trainer_id) VALUES (2);
--- INSERT INTO Admins (admin_id) VALUES (3);
-
--- SELECT * FROM Users;
-
 WITH new_user AS (
   INSERT INTO "User"(first_name, last_name, email, user_password, user_type)
   VALUES ('Dean','Sabbah','deansabbah@cmail.carleton.ca', 'password', 0)
@@ -69,3 +56,19 @@ VALUES ('Room 202', 40, 'First floor kick boxing room');
 
 INSERT INTO Room (room_name, capacity, location_details)
 VALUES ('Room 405', 15, 'Third floor wellness room');
+
+-- equipment
+INSERT INTO Equipment (name, status, location_details)
+VALUES ('Dumbells', 'OK', 'Room 102 - Basement strength training room');
+
+INSERT INTO Equipment (name, status, location_details)
+VALUES ('Treadmill', 'OK', 'Room 201 - First floor near reception');
+
+INSERT INTO Equipment (name, status, location_details)
+VALUES ('Yoga balls', 'OK', 'Room 307 - Second floor yoga room');
+
+INSERT INTO Equipment (name, status, location_details)
+VALUES ('Punching Bag', 'OK', 'First floor kick boxing room');
+
+INSERT INTO Equipment (name, status, location_details)
+VALUES ('Massage Chair', 'OK', 'Third floor wellness room');

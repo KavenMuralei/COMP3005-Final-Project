@@ -118,21 +118,19 @@ public class Member extends User{
                     return;
                 }
 
-                System.out.println("===== DASHBOARD =====");
+                System.out.println("Member dashboard:");
+
 
                 boolean printedHeader = false;
 
                 while (rs.next()) {
                     if (!printedHeader) {
-                        System.out.println("Name: "
-                                + rs.getString("first_name") + " "
-                                + rs.getString("last_name"));
-
-                        System.out.println("Latest Weight (kg): " + rs.getObject("latest_weight"));
-                        System.out.println("Latest Height (cm): " + rs.getObject("latest_height"));
-                        System.out.println("Latest Bodyfat: " + rs.getObject("latest_bodyfat"));
-                        System.out.println("Latest BPM: " + rs.getObject("latest_bpm"));
-                        System.out.println("Last Metric Time: " + rs.getTimestamp("last_metric_time"));
+                        System.out.println("Name: " + rs.getString("first_name") + " " + rs.getString("last_name"));
+                        System.out.println("Latest Weight (kg): " + safeValue(rs.getObject("latest_weight")));
+                        System.out.println("Latest Height (cm): " + safeValue(rs.getObject("latest_height")));
+                        System.out.println("Latest Bodyfat (%): " + safeValue(rs.getObject("latest_bodyfat")));
+                        System.out.println("Latest BPM: " + safeValue(rs.getObject("latest_bpm")));
+                        System.out.println("Last Metric Time: " + safeValue(rs.getTimestamp("last_metric_time")));
                         System.out.println("Total Classes Joined: " + rs.getInt("total_classes_joined"));
                         System.out.println("Active Goals:");
                         printedHeader = true;
@@ -140,15 +138,23 @@ public class Member extends User{
 
                     // Print each active goal
                     System.out.println(" - " + rs.getString("goal_type")
-                            + " | Target: " + rs.getObject("target")
+                            + " | Target: " + safeValue(rs.getObject("target"))
                             + " | Status: " + rs.getString("goal_status"));
                 }
+
+                System.out.println("==================================");
+
             }
 
         } catch (Exception e) {
             System.out.println("Error retrieving dashboard:");
-            System.out.println(e);
+            e.printStackTrace();
         }
+    }
+
+    //helper to handle null values
+    private static String safeValue(Object value) {
+        return (value == null) ? "N/A" : value.toString();
     }
 
     public static void addFitnessGoal(Connection connection, Scanner input) {
@@ -196,19 +202,19 @@ public class Member extends User{
         Integer bpm = null;
 
         try {
-            System.out.println("Enter weight in kilograms (or press Enter to skip):");
+            System.out.println("Enter weight in kilograms:");
             String w = input.nextLine().trim();
             if (!w.isEmpty()) weight = Double.parseDouble(w);
 
-            System.out.println("Enter height (or press Enter to skip):");
+            System.out.println("Enter height:");
             String h = input.nextLine().trim();
             if (!h.isEmpty()) height = Double.parseDouble(h);
 
-            System.out.println("Enter bodyfat percentage (or press Enter to skip):");
+            System.out.println("Enter bodyfat percentage:");
             String b = input.nextLine().trim();
             if (!b.isEmpty()) bodyfat = Double.parseDouble(b);
 
-            System.out.println("Enter BPM (or press Enter to skip):");
+            System.out.println("Enter BPM:");
             String r = input.nextLine().trim();
             if (!r.isEmpty()) bpm = Integer.parseInt(r);
 
@@ -410,7 +416,7 @@ public class Member extends User{
 
         try {
             if (action.equals("book")) {
-                
+                // Show trainer availability
                 String availQuery = """
                 SELECT trainer_id, day, shift_start, shift_end
                 FROM TrainerAvailability
@@ -426,6 +432,24 @@ public class Member extends User{
                     }
                 }
 
+                // Show available rooms
+                String roomQuery = """
+                SELECT room_id, room_name, capacity, location_details
+                FROM Room
+                ORDER BY room_id
+                """;
+                try (PreparedStatement ps = connection.prepareStatement(roomQuery);
+                     ResultSet rs = ps.executeQuery()) {
+                    System.out.println("===== Available Rooms =====");
+                    while (rs.next()) {
+                        System.out.println("Room ID: " + rs.getInt("room_id")
+                                + " | Name: " + rs.getString("room_name")
+                                + " | Capacity: " + rs.getInt("capacity")
+                                + " | Location: " + rs.getString("location_details"));
+                    }
+                }
+
+                // Now prompt for trainer and room
                 System.out.println("Enter trainer_id:");
                 int trainerId = Integer.parseInt(input.nextLine().trim());
 
@@ -441,7 +465,7 @@ public class Member extends User{
                 System.out.println("Enter end time (HH:mm):");
                 LocalTime endTime = LocalTime.parse(input.nextLine().trim());
 
-
+                //check if trainer is available
                 String availabilityQuery = """
                 SELECT 1 FROM TrainerAvailability
                 WHERE trainer_id = ? AND day = ?
@@ -460,7 +484,7 @@ public class Member extends User{
                         }
                     }
                 }
-
+                //check for time conflicts
                 String conflictQuery = """
                 SELECT 1 FROM Bookings
                 WHERE room_id = ? AND day = ?
@@ -481,7 +505,7 @@ public class Member extends User{
                         }
                     }
                 }
-
+                //insert into booking table
                 String bookingQuery = """
                 INSERT INTO Bookings (trainer_id, room_id, start_time, end_time, day)
                 VALUES (?, ?, ?, ?, ?)
@@ -501,7 +525,7 @@ public class Member extends User{
                     }
                 }
 
-
+                //insert into ptsession table
                 String ptQuery = """
                 INSERT INTO PTSession (member_id, booking_id, status)
                 VALUES (?, ?, 'scheduled')
@@ -516,6 +540,7 @@ public class Member extends User{
 
             } else if (action.equals("reschedule") || action.equals("remove")) {
 
+                //find the sessions
                 String sessionQuery = """
                 SELECT pt.pt_session_id, b.day, b.start_time, b.end_time, b.room_id, b.trainer_id
                 FROM PTSession pt
@@ -555,7 +580,7 @@ public class Member extends User{
 
                     System.out.println("Enter new end time (HH:mm):");
                     LocalTime newEnd = LocalTime.parse(input.nextLine().trim());
-
+                    //updates the current booking
                     String updateQuery = """
                     UPDATE Bookings
                     SET day = ?, start_time = ?, end_time = ?
@@ -577,6 +602,7 @@ public class Member extends User{
                     }
 
                 } else if (action.equals("remove")) {
+                    //deletes the session from the table
                     String deleteQuery = """
                     DELETE FROM PTSession WHERE pt_session_id = ? AND member_id = ?
                     """;
@@ -603,7 +629,7 @@ public class Member extends User{
     }
     public static void registerForGroupClass(Connection connection, Scanner input) {
         try {
-            // Step 1: Show available group classes with capacity info
+            // Show available group classes with capacity info
             String classQuery = """
             SELECT cg.group_id, c.name AS class_name, cg.max_capacity,
                    COUNT(jg.member_id) AS registered_count
@@ -635,7 +661,7 @@ public class Member extends User{
                 }
             }
 
-            // Step 2: Ask which group to register for
+
             System.out.println("Enter group_id to register (or press Enter to cancel):");
             String inputGroup = input.nextLine().trim();
             if (inputGroup.isEmpty()) {
@@ -644,7 +670,7 @@ public class Member extends User{
             }
             int groupId = Integer.parseInt(inputGroup);
 
-            // Step 3: Check capacity
+            //checks the capacity
             String capacityQuery = """
             SELECT cg.max_capacity, COUNT(jg.member_id) AS registered_count
             FROM ClassGroup cg
@@ -668,6 +694,7 @@ public class Member extends User{
                     }
                 }
             }
+            //check to see if member is already registered
             String checkQuery = """
             SELECT 1 FROM Join_Group WHERE member_id = ? AND group_id = ?
             """;
@@ -682,7 +709,7 @@ public class Member extends User{
                 }
             }
 
-            // Step 5: Register
+            // registration query
             String insertQuery = """
             INSERT INTO Join_Group (group_id, member_id, enrollment_date)
             VALUES (?, ?, CURRENT_DATE)

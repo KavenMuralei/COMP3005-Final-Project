@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS Maintenance (
     record_id SERIAL PRIMARY KEY,
     equipment_id INT REFERENCES Equipment(equipment_id) NOT NULL,
     room_id INT REFERENCES Room(room_id),
-    report_date TIMESTAMP NOT NULL,
+    report_date TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,
     issue_description TEXT,
     status VARCHAR(255) NOT NULL DEFAULT 'reported'
 );
@@ -170,8 +170,7 @@ LEFT JOIN LATERAL (
     ORDER BY time DESC
     LIMIT 1
 ) hm ON TRUE
-LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id
-WHERE fg.status = 'ongoing';
+LEFT JOIN FitnessGoal fg ON fg.member_id = m.member_id;
 
 
 -- trigger for health metric to fitness goal completion
