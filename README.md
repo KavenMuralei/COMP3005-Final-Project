@@ -12,7 +12,7 @@ https://github.com/KavenMuralei/COMP3005-Final-Project
 ## Videos:  
 - [DDL/SQL](https://youtu.be/ynwafMYWMGc)
 - [ER model and Relation Schema diagrams](https://youtu.be/cjnfWEdgspc)
-- [Operation demonstrations](https://youtu.be/UExdMYRmKKM)
+- [Operation demonstrations](https://youtu.be/UExdMYRmKKM)/[Operation demonstrations ALT Link](https://drive.google.com/file/d/1xTgsrsqfd_oS1ZrIEb4E9XAQL1HftHiG/view?usp=drive_link) 
 
 
 ## Install and running:
@@ -24,13 +24,14 @@ https://github.com/KavenMuralei/COMP3005-Final-Project
 - To initialize the database you have to run the DDL.sql file on your PostgreSQL server. The DDL.sql file can be found in the sql folder of this project. 
 - To populate the database you have to run the DML.sql file on your PostgreSQL server. The DML.sql file can also be found in the sql folder of this project
 
-GIT CLONE METHOD:
+#### Using provided .jar stuff
+Included in the submitted .zip file is an executable jar file. To run this, all you need to do is run the following command in the same directory as the jar file:  
+`java -jar .\COMP3005-Final-Project.jar`
+
+#### Git clone method
 - Open up an IDE (IntelliJ, Visual Studio Code)
 - Clone the git via the terminal and type `git clone <repository link>` or an option within the IDE (EX. 'Git' area in IntelliJ) using the repository link there
 - If asked that a maven was detected, apply it (for IntelliJ, IDK about VSC)
-
-Included in the submitted .zip file is an executable jar file. To run this, all you need to do is run the following command in the same directory as the jar file:  
-`java -jar .\COMP3005-Final-Project.jar`
 
 Otherwise, you can take the following steps to build and run the file yourself.  
 1. Select a code editor (has only been tested on VSCode using java extentions and Intelij)  
