@@ -40,7 +40,11 @@ Otherwise, you can take the following steps to build and run the file yourself.
 
 ### Users Email
 Preset Login Information for signing in
+
 Member: deansabbah@cmail.carleton.ca
+
 Trainer: anshsharma@cmail.carleton.ca
+
 Admin: kavenmuraleitharan@cmail.carleton.ca
+
 Password for all: password
