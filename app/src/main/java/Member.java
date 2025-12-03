@@ -42,7 +42,7 @@ public class Member extends User{
         String phone_number = "";
 
         while (phone_number.isEmpty()) {
-            System.out.println("Please enter new phone number (xxx-xxx-xxxx):");
+            System.out.println("Please enter new date of birth:");
             phone_number = input.nextLine();
         }
 
