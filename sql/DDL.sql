@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS Maintenance (
     status VARCHAR(255) NOT NULL DEFAULT 'reported'
 );
 
+-- User index for trainer lookup
 CREATE INDEX IF NOT EXISTS name_index ON "User" (
     lower(first_name), lower(last_name)
 );
