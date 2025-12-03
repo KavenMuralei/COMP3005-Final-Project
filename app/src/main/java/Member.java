@@ -125,19 +125,19 @@ public class Member extends User{
 
                 while (rs.next()) {
                     if (!printedHeader) {
-                        System.out.println(STR."Name: \{rs.getString("first_name")} \{rs.getString("last_name")}");
-                        System.out.println(STR."Latest Weight (kg): \{safeValue(rs.getObject("latest_weight"))}");
-                        System.out.println(STR."Latest Height (cm): \{safeValue(rs.getObject("latest_height"))}");
-                        System.out.println(STR."Latest Bodyfat (%): \{safeValue(rs.getObject("latest_bodyfat"))}");
-                        System.out.println(STR."Latest BPM: \{safeValue(rs.getObject("latest_bpm"))}");
-                        System.out.println(STR."Last Metric Time: \{safeValue(rs.getTimestamp("last_metric_time"))}");
-                        System.out.println(STR."Total Classes Joined: \{rs.getInt("total_classes_joined")}");
+                        System.out.println("Name: " + rs.getString("first_name") + " " + rs.getString("last_name"));
+                        System.out.println("Latest Weight (kg): " + safeValue(rs.getObject("latest_weight")));
+                        System.out.println("Latest Height (cm): " + safeValue(rs.getObject("latest_height")));
+                        System.out.println("Latest Bodyfat (%): " + safeValue(rs.getObject("latest_bodyfat")));
+                        System.out.println("Latest BPM: " + safeValue(rs.getObject("latest_bpm")));
+                        System.out.println("Last Metric Time: " + safeValue(rs.getTimestamp("last_metric_time")));
+                        System.out.println("Total Classes Joined: " + rs.getInt("total_classes_joined"));
                         System.out.println("Active Goals:");
                         printedHeader = true;
                     }
 
                     // Print each active goal
-                    System.out.println(STR." - \{rs.getString("goal_type")} | Target: \{safeValue(rs.getObject("target"))} | Status: \{rs.getString("goal_status")}");
+                    System.out.println(" - " + rs.getString("goal_type") + " | Target: " + safeValue(rs.getObject("target")) + " | Status: " + rs.getString("goal_status"));
                 }
 
                 System.out.println("==================================");
@@ -146,7 +146,7 @@ public class Member extends User{
 
         } catch (Exception e) {
             System.out.println("Error retrieving dashboard:");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -265,7 +265,7 @@ public class Member extends User{
                 boolean hasGoals = false;
                 while (rs.next()) {
                     hasGoals = true;
-                    System.out.println(STR."Goal ID: \{rs.getInt("goal_id")} | Type: \{rs.getString("goal_type")} | Target: \{rs.getDouble("target")} | Status: \{rs.getString("status")} | Start: \{rs.getDate("start_of_goal")} | End: \{rs.getDate("end_of_goal")}");
+                    System.out.println("Goal ID: " + rs.getInt("goal_id") + " | Type: " + rs.getString("goal_type") + " | Target: " + rs.getDouble("target") + " | Status: " + rs.getString("status") + " | Start: " + rs.getDate("start_of_goal") + " | End: " + rs.getDate("end_of_goal"));
                 }
                 if (!hasGoals) {
                     System.out.println("No fitness goals found for this member.");
@@ -382,11 +382,11 @@ public class Member extends User{
                 boolean hasHistory = false;
                 while (rs.next()) {
                     hasHistory = true;
-                    System.out.println(STR."Date/Time: \{rs.getTimestamp("time")} | Weight (kg): \{rs.getObject("weight")} | Height (cm): \{rs.getObject("height_cm")} | Bodyfat (%): \{rs.getObject("bodyfat_percent")} | BPM: \{rs.getObject("bpm")}");
+                    System.out.println("Date/Time: " + rs.getTimestamp("time") + " | Weight (kg): " + rs.getObject("weight") + " | Height (cm): " + rs.getObject("height_cm") + " | Bodyfat (%): " + rs.getObject("bodyfat_percent") + " | BPM: " + rs.getObject("bpm"));
                 }
 
                 if (!hasHistory) {
-                    System.out.println(STR."No health history found for member \{user_id}");
+                    System.out.println("No health history found for member " + user_id);
                 }
             }
 
@@ -415,7 +415,7 @@ public class Member extends User{
                      ResultSet rs = ps.executeQuery()) {
                     System.out.println("===== Trainer Availabilities =====");
                     while (rs.next()) {
-                        System.out.println(STR."Trainer ID: \{rs.getInt("trainer_id")} | Day: \{rs.getDate("day")} | Shift: \{rs.getTime("shift_start")} - \{rs.getTime("shift_end")}");
+                        System.out.println("Trainer ID: " + rs.getInt("trainer_id") + " | Day: " + rs.getDate("day") + " | Shift: " + rs.getTime("shift_start") + " - " + rs.getTime("shift_end"));
                     }
                 }
 
@@ -429,7 +429,7 @@ public class Member extends User{
                      ResultSet rs = ps.executeQuery()) {
                     System.out.println("===== Available Rooms =====");
                     while (rs.next()) {
-                        System.out.println(STR."Room ID: \{rs.getInt("room_id")} | Name: \{rs.getString("room_name")} | Capacity: \{rs.getInt("capacity")} | Location: \{rs.getString("location_details")}");
+                        System.out.println("Room ID: " + rs.getInt("room_id") + " | Name: " + rs.getString("room_name") + " | Capacity: " + rs.getInt("capacity") + " | Location: " + rs.getString("location_details"));
                     }
                 }
 
@@ -539,7 +539,7 @@ public class Member extends User{
                         boolean hasSessions = false;
                         while (rs.next()) {
                             hasSessions = true;
-                            System.out.println(STR."Session ID: \{rs.getInt("pt_session_id")} | Trainer: \{rs.getInt("trainer_id")} | Room: \{rs.getInt("room_id")} | Date: \{rs.getDate("day")} | Time: \{rs.getTime("start_time")} - \{rs.getTime("end_time")}");
+                            System.out.println("Session ID: " + rs.getInt("pt_session_id") + " | Trainer: " + rs.getInt("trainer_id") + " | Room: " + rs.getInt("room_id") + " | Date: " + rs.getDate("day") + " | Time: " + rs.getTime("start_time") + " - " + rs.getTime("end_time"));
                         }
                         if (!hasSessions) {
                             System.out.println("No PT sessions found.");
@@ -548,7 +548,7 @@ public class Member extends User{
                     }
                 }
 
-                System.out.println(STR."Enter pt_session_id to \{action}:");
+                System.out.println("Enter pt_session_id to " + action + ":");
                 int ptSessionId = Integer.parseInt(input.nextLine().trim());
 
                 if (action.equals("reschedule")) {
@@ -631,7 +631,7 @@ public class Member extends User{
                     int maxCapacity = rs.getInt("max_capacity");
                     int registered = rs.getInt("registered_count");
 
-                    System.out.println(STR."Group ID: \{groupId} | Class: \{className} | Capacity: \{registered}/\{maxCapacity}");
+                    System.out.println("Group ID: " + groupId + " | Class: " + className + " | Capacity: " + registered + "/" + maxCapacity);
                 }
                 if (!hasClasses) {
                     System.out.println("No group classes scheduled.");
@@ -701,7 +701,7 @@ public class Member extends User{
 
         } catch (Exception e) {
             System.out.println("Error registering for group class:");
-            System.out.println(e);
+            System.out.println();
         }
     }
 }
