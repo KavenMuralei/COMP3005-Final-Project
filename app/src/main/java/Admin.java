@@ -417,15 +417,11 @@ public class Admin extends User{
                         }
                     }
 
-                    System.out.println("A");
-
                     //Checks trainer shift time
                     //SQL SELECT for ClassManagement (SessionMaker)
                     Statement trainerCheck = connection.createStatement();
                     trainerCheck.executeQuery("SELECT shift_start,shift_end FROM TrainerAvailability WHERE trainer_id=" + trainer_id + " AND day='" + day + "' "); //SELECT statement
                     ResultSet trainerAvailability = trainerCheck.getResultSet();
-
-                    System.out.println("B");
 
                     boolean trainerAtWork = false;
                     try {
@@ -439,14 +435,10 @@ public class Admin extends User{
                         trainerAtWork = true;
                     }
 
-                    System.out.println("C");
-
                     //Checks other bookings that the trainer has current
                     Statement bookingCheck = connection.createStatement();
                     bookingCheck.executeQuery("SELECT start_time,end_time FROM Bookings WHERE trainer_id='" + trainer_id + "' AND day='" + day + "' "); //SELECT statement
                     ResultSet bookingAvailability = bookingCheck.getResultSet();
-
-                    System.out.println("D");
 
                     noConflicts = true;
                     while (bookingAvailability.next() && !bookingAvailability.getString("start_time").isEmpty() && !bookingAvailability.getString("end_time").isEmpty()) {
