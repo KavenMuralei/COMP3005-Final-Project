@@ -118,8 +118,9 @@ public class Main {
             System.out.println("Please select an *Admin* operation:");
             // System.out.println("1. Room Booking");
             System.out.println("1. Equipment Maintenance");
-            System.out.println("2. Class Management and Room Booking");
-            System.out.println("3. Back");
+            System.out.println("2. Equipment Status");
+            System.out.println("3. Class Management and Room Booking");
+            System.out.println("4. Back");
             System.out.println("------------------------------------------------");
             System.out.print("Choose an option: ");
             option = input.nextLine();
@@ -132,10 +133,13 @@ public class Main {
                 case "1", "equipment maintenance":
                     Admin.equipmentMaintenece(connection, input);
                     break;
-                case "2", "class management":
+                case "2", "equipment status":
+                    Admin.displayEquipmentStatus(connection, input);
+                    break;
+                case "3", "class management":
                     Admin.classManagement(connection, input);
                     break;
-                case "3": User.logout(); System.out.println("You have been logged out."); return 0;
+                case "4": User.logout(); System.out.println("You have been logged out."); return 0;
                 default:
                     System.out.println("Invalid input");
                 System.out.println("\n");

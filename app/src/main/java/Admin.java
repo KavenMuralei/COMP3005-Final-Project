@@ -273,6 +273,60 @@ public class Admin extends User{
         return false;
     }
 
+    public static void displayEquipmentStatus(Connection connection, Scanner input) {
+        String query = """
+                SELECT equipment_id, name
+                FROM Equipment
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(query)){
+            try (ResultSet rs = ps.executeQuery()) {
+                boolean any = false;
+                while(rs.next()) {
+                    System.out.println(String.format("Equipment ID: %d, %s", rs.getInt("equipment_id"), rs.getString("name")));
+                    any = true;
+                }
+                if(!any) {
+                    System.out.println("No equipment found.");
+                    return;
+                }
+
+                int option = -1;
+                boolean valid = false;
+                while (option < 0 || !valid) {
+                    try {
+                        System.out.println("Please select an equipment ID");
+                        option = input.nextInt();
+                        valid = true;
+                    } catch (Exception e) {
+                        System.out.println("Please make sure you are entering a number");
+                    }
+                }
+
+                query = """
+                        SELECT status
+                        FROM Maintenance
+                        WHERE equipment_id = ?
+                        ORDER BY report_date DESC
+                        LIMIT 1
+                        """;
+                try (PreparedStatement ps2 = connection.prepareStatement(query)) {
+                    ps2.setInt(1, option);
+                    try (ResultSet rs2 = ps2.executeQuery()) {
+                        if(!rs2.next()){
+                            System.out.println("No maintenance logs for selected item");
+                            return;
+                        }
+                        System.out.printf("Equipment status: %s\n", rs2.getString("status"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting equipment status:");
+            System.err.println(e);
+        }
+    }
+
     public static boolean classManagement(Connection connection, Scanner input){
         String option;
         loop: while (true) {
