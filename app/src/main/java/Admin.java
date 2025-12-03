@@ -7,7 +7,9 @@ public class Admin extends User{
     public static int roomBooking(Connection connection, Scanner input, Date day, Time start, Time end){
         int room_id = -1;
         try{
-            //roombooking
+
+            //SQL SELECT for RoomBooking
+            //room booking
             String query = """
                     SELECT room_id, room_name, capacity
                     FROM Room
@@ -39,10 +41,132 @@ public class Admin extends User{
                     
                 }
             }
+
+            //boolean valid = false;
+            // System.out.println("Please enter the Room ID you would like to book");
+            // while (room_id < 0 || !valid) {
+            //     try {
+            //         room_id = input.nextInt();
+            //         valid = true;
+            //     } catch (Exception e) {
+            //         System.out.println("Please enter a number");
+            //     }
+            // }
+            // Date day = Date.valueOf("0001:01:01");
+            // Time start = Time.valueOf("0:01"), end = Time.valueOf("0:01");
+
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What day would you like to book?");
+            //     try {
+            //         day = Date.valueOf(input.nextLine());
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter date in format yyyy-mm-dd");
+            //     }
+            // }
+            // DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("H:mm");
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What time would you like to start?");
+            //     try {
+            //         start = LocalTime.parse(input.nextLine(), timeFmt);
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter time in format hh:mm");
+            //     }
+            // }
+            // valid = false;
+            // while(!valid) {
+            //     System.out.println("What time would you like to end?");
+            //     try {
+            //         end = LocalTime.parse(input.nextLine(), timeFmt);
+            //         if(end.isBefore(start)) {
+            //             System.out.println("End time cannot be before start time");
+            //             continue;
+            //         }
+            //         valid = true;
+            //     }
+            //     catch (Exception e) {
+            //         System.out.println("Please enter time in format hh:mm");
+            //     }
+            // }
+
+            // if(!Room.available(room_id, day, start, end, connection, input)) {
+            //     System.out.println("Room unavailable");
+            //     return -1;
+            // }
+            
+            // query = """
+            //         SELECT booking_id, start_time, end_time, day
+            //         FROM bookings
+            //         """;
+
+            // int booking_id = -1;
+            
+            // try (PreparedStatement ps = connection.prepareStatement(query)){
+            //     ResultSet rs = ps.executeQuery();
+                
+            //     boolean any = false;
+            //     while(rs.next()) {
+            //         System.out.println(String.format("Booking ID: %d, %s at %s to %s", rs.getInt("booking_id"), rs.getString("day"), rs.getString("start_time"),rs.getString("end_time")));
+            //         any = true;
+            //     }
+            //     if(!any) {
+            //         System.out.println("There are no bookings to chose from.");
+            //         return -1;
+            //     }
+
+            //     System.out.println("Which booking would you like to add the room?");
+            //     valid = false;
+            //     while(booking_id < 0 || !valid) {
+            //         try {
+            //             booking_id = input.nextInt();
+            //             valid = true;
+            //         } catch (Exception e) {
+            //             System.out.println("Please enter booking ID");
+            //         }
+            //     }
+            //     query = """
+            //             SELECT start_time, end_time, day
+            //             FROM BOOKING 
+            //             WHERE boooking_id = ?
+            //             """;
+            //     try (PreparedStatement ps2 = connection.prepareStatement(query)){
+            //         ps2.setInt(1, booking_id);
+            //         try (ResultSet rs2 = ps.executeQuery()) {
+            //             if(!rs2.next()) throw new Exception("Booking not found");
+
+            //             start = rs.getTime("start_time");
+            //             end = rs.getTime("end_time");
+            //             day = rs.getDate("day");
+            //         } catch (Exception e) {
+            //             System.err.println("Error getting booking:");
+            //             System.err.println(e);
+            //             return -1;
+            //         }
+            //     } 
+            // }
+
             if(!Room.available(room_id, day, start, end, connection, input)) {
                 System.out.println("Room is unavailable");
                 return -1;
             }
+
+            // query = """
+            //         UPDATE bookings
+            //         SET room_id = ?
+            //         WHERE booking_id = ?
+            //         """;
+            
+            // try (PreparedStatement ps = connection.prepareStatement(query)) {
+            //     ps.setInt(1, room_id);
+            //     ps.setInt(2, booking_id);
+            //     ps.executeUpdate();
+            // }
+
         }
         catch(Exception e){
             System.err.println("Error Booking Room");
@@ -58,8 +182,9 @@ public class Admin extends User{
             try {
                 int equipment_id = -1, room_id = -1;
                 String status = "", description = "";
+
+                //SQL SELECT for EquipmentMaintenance
                 Statement equipmentQuery = connection.createStatement();
-                // equipmentmaintenence: grabs each equipment for the table
                 equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
                 ResultSet equipmentRS = equipmentQuery.getResultSet();
 
@@ -72,7 +197,8 @@ public class Admin extends User{
                     try{
                         System.out.println("Enter an equipment id: ");
                         equipment_id = Integer.parseInt(input.nextLine());
-                        // equipmentmaintenence: grabs a specific equipment id
+
+                        //SQL SELECT for EquipmentMaintenance
                         equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
                         equipmentRS = equipmentQuery.getResultSet();
                         while (equipmentRS.next()) {
@@ -89,8 +215,8 @@ public class Admin extends User{
                     }
                 }
 
+                //SQL SELECT for EquipmentMaintenance
                 Statement roomQuery = connection.createStatement();
-                //equipmentMaintenece grabs all rooms
                 roomQuery.execute("SELECT room_id,room_name FROM Room");
                 ResultSet roomRS = roomQuery.getResultSet();
 
@@ -104,6 +230,7 @@ public class Admin extends User{
                         System.out.println("Enter a room id that the equipment is in: ");
                         room_id = Integer.parseInt(input.nextLine());
 
+                        //SQL SELECT for EquipmentMaintenance
                         roomQuery.execute("SELECT room_id,room_name FROM Room");
                         roomRS = roomQuery.getResultSet();
                         while (roomRS.next()) {
@@ -137,6 +264,7 @@ public class Admin extends User{
                     confirm = input.nextLine();
                 }
 
+                //SQL INSERT for EquipmentMaintenance
                 String maintenanceQuery = "INSERT INTO Maintenance (equipment_id, room_id, status, issue_description) VALUES (?, ?, ?, ?)";
                 try(PreparedStatement maintenanceIns = connection.prepareStatement(maintenanceQuery)){
                     maintenanceIns.setInt(1, equipment_id);
@@ -259,7 +387,7 @@ public class Admin extends User{
                 }
             }
 
-            //SQL Operation
+            //SQL SELECT for ClassManagement Operation (Class Creation)
             String classInsertQuery = "INSERT INTO Class (name, description) VALUES (?,?)";
             try (PreparedStatement classIns = connection.prepareStatement(classInsertQuery)) {
                 classIns.setString(1, cName);
@@ -298,6 +426,7 @@ public class Admin extends User{
                 end_time = "";
                 confirm = "";
 
+                //SQL SELECT for ClassManagement (SessionMaker)
                 Statement classList = connection.createStatement();
                 classList.execute("SELECT class_id,name from Class");
                 ResultSet classRS = classList.getResultSet();
@@ -326,7 +455,7 @@ public class Admin extends User{
 
                 }
 
-
+                //SQL SELECT for ClassManagement (SessionMaker)
                 Statement trainerList = connection.createStatement();
                 trainerList.execute("SELECT user_id,first_name,last_name,user_type FROM \"User\" WHERE user_type=1 ");
                 ResultSet trainerRS = trainerList.getResultSet();
@@ -409,12 +538,15 @@ public class Admin extends User{
                         }
                     }
 
+                    System.out.println("A");
 
                     //Checks trainer shift time
+                    //SQL SELECT for ClassManagement (SessionMaker)
                     Statement trainerCheck = connection.createStatement();
                     trainerCheck.executeQuery("SELECT shift_start,shift_end FROM TrainerAvailability WHERE trainer_id=" + trainer_id + " AND day='" + day + "' "); //SELECT statement
                     ResultSet trainerAvailability = trainerCheck.getResultSet();
 
+                    System.out.println("B");
 
                     boolean trainerAtWork = false;
                     try {
@@ -428,12 +560,14 @@ public class Admin extends User{
                         trainerAtWork = true;
                     }
 
+                    System.out.println("C");
 
                     //Checks other bookings that the trainer has current
                     Statement bookingCheck = connection.createStatement();
                     bookingCheck.executeQuery("SELECT start_time,end_time FROM Bookings WHERE trainer_id='" + trainer_id + "' AND day='" + day + "' "); //SELECT statement
                     ResultSet bookingAvailability = bookingCheck.getResultSet();
 
+                    System.out.println("D");
 
                     noConflicts = true;
                     while (bookingAvailability.next() && !bookingAvailability.getString("start_time").isEmpty() && !bookingAvailability.getString("end_time").isEmpty()) {
@@ -457,24 +591,9 @@ public class Admin extends User{
 
             }
 
-//                while (type != "1" || type != "2" || type.toLowerCase() != "pt" || type.toLowerCase() == "class") {
-//                    System.out.println("Please enter the type of session");
-//                    System.out.println("1. PT");
-//                    System.out.println("2. Class");
-//                    type = input.nextLine();
-//                    if(type != "1" || type != "2" || type.toLowerCase() != "pt" || type.toLowerCase() == "class"){
-//                        System.out.println("Incorrect selection");
-//                    }
-//                }
+            //SQL Class Session inertion
 
-//                if(type == "1" || type.toLowerCase() == "pt") {
-//                    bookingInsertQuery =
-//                            "WITH booking AS (INSERT INTO Bookings (trainer_id, room_id, start_time, end_time, day) VALUES (?,?,?,?,?) RETURNING booking_id) INSERT INTO PTSession(member_id, booking_id, status) VALUES (?, booking_id, ?) FROM booking";
-//                }
-//                else if(type == "2" || type.toLowerCase() == "class"){}
-
-            //SQL Insertions
-
+            //SQL INSERT for ClassManagement (SessionMaker)
             //Booking Insert
             String bookingInsertQuery = "INSERT INTO Bookings (trainer_id, room_id, start_time, end_time, day) VALUES (?,?,?,?,?) RETURNING booking_id";
             int booking_id = -1;
@@ -499,10 +618,12 @@ public class Admin extends User{
                     System.out.println("Can't insert values new booking\n"+bookingInsert);
                 }
 
+                //SQL INSERT for ClassManagement (SessionMaker)
                 //Class Session
                 if(booking_id != -1) {
                     String classSessionInsertQuery = "INSERT INTO ClassSession(class_id, group_id, booking_id) VALUES (?, ?, ?)";
                     try(PreparedStatement classSessionIns = connection.prepareStatement(classSessionInsertQuery)){
+                        //SQL INSERT for ClassManagement (SessionMaker)
                         //Class Group Insert
                         Statement classGroup = connection.createStatement();
                         classGroup.execute("INSERT INTO ClassGroup (class_id, max_capacity) VALUES ('"+class_id+"','"+session_size+"') RETURNING group_id");
