@@ -120,7 +120,7 @@ public class Main {
             System.out.println("1. Equipment Maintenance");
             System.out.println("2. Equipment Status");
             System.out.println("3. Class Management and Room Booking");
-            System.out.println("4. Back");
+            System.out.println("4. Logout");
             System.out.println("------------------------------------------------");
             System.out.print("Choose an option: ");
             option = input.nextLine();
