@@ -68,7 +68,7 @@ public class Trainer extends User{
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    System.out.printf("%s, from %s to %s",
+                    System.out.printf("%s, from %s to %s\n",
                         rs.getString("day"),
                         rs.getString("shift_start"),
                         rs.getString("shift_end")
