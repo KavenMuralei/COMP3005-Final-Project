@@ -190,18 +190,22 @@ public class Admin extends User{
 
                 boolean valid = false;
                 while (!valid) {
-                    System.out.println("Enter an equipment id: ");
-                    equipment_id = input.nextInt();
-                    equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
-                    equipmentRS = equipmentQuery.getResultSet();
-                    while (equipmentRS.next()) {
-                        if (equipment_id == equipmentRS.getInt("equipment_id")) {
-                            valid = true;
-                            break;
+                    try{
+                        System.out.println("Enter an equipment id: ");
+                        equipment_id = Integer.parseInt(input.nextLine());
+                        equipmentQuery.execute("SELECT equipment_id, name FROM Equipment");
+                        equipmentRS = equipmentQuery.getResultSet();
+                        while (equipmentRS.next()) {
+                            if (equipment_id == equipmentRS.getInt("equipment_id")) {
+                                valid = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!valid) {
-                        System.out.println("No equipment with an ID that matches");
+                        if (!valid) {
+                            System.out.println("No equipment with an ID that matches");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error when inputting equipment ID:" + e);
                     }
                 }
 
@@ -215,19 +219,25 @@ public class Admin extends User{
 
                 valid = false;
                 while (!valid) {
-                    System.out.println("Enter a room id that the equipment is in: ");
-                    room_id = input.nextInt();
-                    roomQuery.execute("SELECT room_id,room_name FROM Room");
-                    roomRS = roomQuery.getResultSet();
-                    while (roomRS.next()) {
-                        if (room_id == roomRS.getInt("room_id")) {
-                            valid = true;
-                            break;
+                    try{
+                        System.out.println("Enter a room id that the equipment is in: ");
+                        room_id = Integer.parseInt(input.nextLine());
+                        roomQuery.execute("SELECT room_id,room_name FROM Room");
+                        roomRS = roomQuery.getResultSet();
+                        while (roomRS.next()) {
+                            if (room_id == roomRS.getInt("room_id")) {
+                                valid = true;
+                                break;
+                            }
+                        }
+                        if (!valid) {
+                            System.out.println("No room with specified ID");
                         }
                     }
-                    if (!valid) {
-                        System.out.println("No room with specified ID");
+                    catch (Exception e){
+                        System.out.println("Error when inputting room ID: "+ e);
                     }
+
                 }
 
                 System.out.println("Enter the status of the equipment");
