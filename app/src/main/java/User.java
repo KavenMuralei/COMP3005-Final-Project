@@ -86,7 +86,7 @@ public class User {
                 confirm = input.nextLine().toLowerCase();
             }
         }
-        
+        // User Registration
         String query = """
                 WITH new_user AS (
                     INSERT INTO \"User\"(first_name, last_name, email, user_password, user_type) 
@@ -184,6 +184,7 @@ public class User {
             l_name = input.nextLine();
         }
 
+        // Profile Management
         String query = """
                 UPDATE \"User\"
                 SET first_name = ?, last_name = ?
@@ -218,6 +219,7 @@ public class User {
             email = input.nextLine().toLowerCase();
         }
 
+        // Profile Management
         String query = """
                 UPDATE \"User\"
                 SET email = ?
@@ -251,6 +253,7 @@ public class User {
             password = input.nextLine();
         }
 
+        // Profile Management
         String query = """
                 UPDATE \"User\"
                 SET user_password = ?

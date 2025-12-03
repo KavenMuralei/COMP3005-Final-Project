@@ -10,7 +10,8 @@ import java.util.Scanner;
 
 public class Trainer extends User{
     public static void displaySchedule(Connection connection) {
-        String sql = """
+        // Schedule View
+        String query = """
             SELECT b.booking_id,
                 b.day,
                 b.start_time,
@@ -33,7 +34,7 @@ public class Trainer extends User{
             ORDER BY day, start_time;
             """;
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, user_id);
             ps.setInt(2, user_id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -55,6 +56,7 @@ public class Trainer extends User{
     }
 
     public static void displayAvailability(Connection connection) {
+        // Set Availability (to display current availability)
         String query = """
                 SELECT *
                 FROM TrainerAvailability
@@ -83,6 +85,7 @@ public class Trainer extends User{
     }
 
     private static void addAvailability(Connection connection, Scanner input) {
+        // Set Availability
         String query = """
                 INSERT INTO TrainerAvailability (trainer_id, day, shift_start, shift_end) 
                 VALUES (?, ?, ?, ?) 
@@ -135,7 +138,9 @@ public class Trainer extends User{
         }
     }
 
+    
     private static void removeAvailability(Connection connection, Scanner input) {
+        //Set Availability
         String query = """
                 DELETE FROM TrainerAvailability
                 WHERE trainer_id = ? AND day = ?
@@ -196,6 +201,7 @@ public class Trainer extends User{
     }
 
     public static void searchMember(Connection connection, Scanner input) {
+        // Member Lookup
         String query = """
                 SELECT user_id 
                 FROM \"User\" 
@@ -234,6 +240,7 @@ public class Trainer extends User{
             System.err.println(e);
         }
         // Latest health metric
+        // Member Lookup
         String latestMetricSql = """
                 SELECT weight, height_cm, bodyfat_percent, bpm, time
                 FROM HealthMetric
@@ -263,6 +270,7 @@ public class Trainer extends User{
         }
 
         // Ongoing fitness goals
+        // Member Lookup
         String goalsSql = """
                 SELECT goal_type, target
                 FROM FitnessGoal
