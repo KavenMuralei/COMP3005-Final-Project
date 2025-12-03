@@ -25,7 +25,7 @@ https://github.com/KavenMuralei/COMP3005-Final-Project
 
 GIT CLONE METHOD:
 - Open up an IDE (IntelliJ, Visual Studio Code)
-- Clone the git via the terminal or an option within the IDE (EX. 'Git' area in IntelliJ) using this link "https://github.com/KavenMuralei/COMP3005-Final-Project.git"
+- Clone the git via the terminal and type `git clone <repository link>` or an option within the IDE (EX. 'Git' area in IntelliJ) using the repository link there
 - If asked that a maven was detected, accept it (for IntelliJ, IDK about VSC)
 
 Included in the submitted .zip file is an executable jar file. To run this, all you need to do is run the following command in the same directory as the jar file:  
