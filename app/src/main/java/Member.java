@@ -81,7 +81,7 @@ public class Member extends User{
     public static void changeGender(Connection connection, Scanner input) {
         String gender = "";
 
-        while (!gender.equals("male") || !gender.equals("female") || !gender.equals("other")) {
+        while (!gender.equals("male") && !gender.equals("female") && !gender.equals("other")) {
             System.out.println("Please enter new gender:");
             gender = input.nextLine().toLowerCase();
         }
