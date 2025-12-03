@@ -49,3 +49,5 @@ Trainer: anshsharma@cmail.carleton.ca
 Admin: kavenmuraleitharan@cmail.carleton.ca
 
 Password for all: password
+
+Once you get into the program, the CLI will direct you. Most inputs on the user's part for menu navigation are either the numbers or the exact phrase beside the number. For most questions where they ask you to input data, make sure formatting is correct, like for dates (YYYY-MM-DD) and 24-hour (HH:MM) timings.
