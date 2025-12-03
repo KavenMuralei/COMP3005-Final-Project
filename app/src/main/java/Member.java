@@ -82,7 +82,7 @@ public class Member extends User{
         String gender = "";
 
         while (!gender.equals("male") && !gender.equals("female") && !gender.equals("other")) {
-            System.out.println("Please enter new gender:");
+            System.out.println("Please enter new gender (male, female, or other):");
             gender = input.nextLine().toLowerCase();
         }
 
