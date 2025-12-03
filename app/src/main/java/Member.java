@@ -39,11 +39,18 @@ public class Member extends User{
     }
 
     public static void changeDoB(Connection connection, Scanner input) {
-        String phone_number = "";
+        Date dob = Date.valueOf("0001-01-01");
 
-        while (phone_number.isEmpty()) {
+        boolean valid = false;
+        while (!valid) {
             System.out.println("Please enter new date of birth:");
-            phone_number = input.nextLine();
+            try {
+                dob = Date.valueOf(input.nextLine());
+                valid = true;
+            }
+            catch (Exception e) {
+                System.out.println("Enter date of birth in format yyyy-mm-dd");
+            }
         }
 
         String query = """
@@ -53,13 +60,13 @@ public class Member extends User{
                 """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, phone_number);
+            ps.setDate(1, dob);
             ps.setInt(2, user_id);
 
             try {
                 ps.executeUpdate();
             } catch (Exception e) {
-                System.out.println("Error updating phone number:");
+                System.out.println("Error changing date of birth:");
                 System.out.println(e);
                 return;
             }
@@ -68,7 +75,7 @@ public class Member extends User{
             System.out.println("Error connection to database:");
             System.out.println(e);
         }
-        System.out.println("Phone Number changed!");
+        System.out.println("Date of birth changed!");
     }
 
     public static void changeGender(Connection connection, Scanner input) {
