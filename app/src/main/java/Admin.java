@@ -296,7 +296,7 @@ public class Admin extends User{
                 while (option < 0 || !valid) {
                     try {
                         System.out.println("Please select an equipment ID");
-                        option = input.nextInt();
+                        option = Integer.parseInt(input.nextLine());
                         valid = true;
                     } catch (Exception e) {
                         System.out.println("Please make sure you are entering a number");
