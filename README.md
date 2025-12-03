@@ -12,6 +12,7 @@ https://github.com/KavenMuralei/COMP3005-Final-Project
 ## Videos:  
 - [DDL/SQL](https://youtu.be/ynwafMYWMGc)
 - [ER model and Relation Schema diagrams](https://youtu.be/cjnfWEdgspc)
+- [Operation demonstrations](https://youtu.be/dR0iCVybI6c)
 
 
 ## Install and running:
