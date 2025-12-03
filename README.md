@@ -9,9 +9,16 @@ Ansh Sharma, Kaven Muraleitharan, Dean Sabbah
 https://github.com/KavenMuralei/COMP3005-Final-Project
 
 
-## Video:  
+## Videos:  
+- [DDL/SQL](https://youtu.be/ynwafMYWMGc)
 
 ## Install and running:  
+
+### Database  
+- Enssure that your Postgresql instance is running on port 5432 (Should be the default value)
+- Make sure that the username and password to the database are 'postgres' and 'admin' respectively
+- Create a new database named 'finalproject'
+
 Included in submitted zip file is an executable jar file. To run this all you need to do is run the following command in the same directory as the jar file:  
 `java -jar .\COMP3005-Final-Project.jar`
 
