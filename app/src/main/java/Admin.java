@@ -230,18 +230,18 @@ public class Admin extends User{
                     }
                 }
 
+                System.out.println("Enter the status of the equipment");
                 while(status.isEmpty()){
-                    System.out.println("Enter the status of the equipment");
                     status = input.nextLine();
                 }
 
+                System.out.println("Enter description of the status");
                 while (description.isEmpty()) {
-                    System.out.println("Enter description of the status");
                     description = input.nextLine();
                 }
 
                 while(!confirm.toLowerCase().equals("yes") && !confirm.toLowerCase().equals("no")){
-                    System.out.println("Equipment ID: "+equipment_id+", Room ID: "+room_id+"\n\nStatus: "+status+"\nDetails: "+description+"\n\nIs this correct> (yes or no)");
+                    System.out.println("Equipment ID: "+equipment_id+", Room ID: "+room_id+"\n\nStatus: "+status+"\nDetails: "+description+"\n\nIs this correct (yes or no)");
                     confirm = input.nextLine();
                 }
 
