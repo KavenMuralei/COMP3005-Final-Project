@@ -118,7 +118,7 @@ public class Main {
             System.out.println("Please select an *Admin* operation:");
             // System.out.println("1. Room Booking");
             System.out.println("1. Equipment Maintenance");
-            System.out.println("2. Class Management");
+            System.out.println("2. Class Management and Room Booking");
             System.out.println("3. Back");
             System.out.println("------------------------------------------------");
             System.out.print("Choose an option: ");
