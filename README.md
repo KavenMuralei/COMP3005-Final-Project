@@ -3,7 +3,7 @@
 ## Group 128
 
 ## Authors: 
-Ansh Sharma, Kaven Muraleitharan, Dean Sabbah
+Ansh Sharma (101327077), Kaven Muraleitharan (101305963), Dean Sabbah (101199120)
 
 ## Repository:
 https://github.com/KavenMuralei/COMP3005-Final-Project
@@ -14,16 +14,18 @@ https://github.com/KavenMuralei/COMP3005-Final-Project
 - [ER model and Relation Schema diagrams](https://youtu.be/cjnfWEdgspc)
 
 
-## Install and running:  
+## Install and running:
+GIT CLONE METHOD:
+- Open up an IDE (IntelliJ, Visual Studio Code)
 
 ### Database  
-- Enssure that your Postgresql instance is running on port 5432 (Should be the default value)
+- Ensure that your Postgresql instance is running on port 5432 (Should be the default value)
 - Make sure that the username and password to the database are 'postgres' and 'admin' respectively
 - Create a new database named 'finalproject'
 - To initialize the database you have to run the DDL.sql file on your PostgreSQL server. The DDL.sql file can be found in the sql folder of this project. 
 - To populate the database you have to run the DML.sql file on your PostgreSQL server. The DML.sql file can also be found in the sql folder of this project
 
-Included in submitted zip file is an executable jar file. To run this all you need to do is run the following command in the same directory as the jar file:  
+Included in the submitted .zip file is an executable jar file. To run this, all you need to do is run the following command in the same directory as the jar file:  
 `java -jar .\COMP3005-Final-Project.jar`
 
 Otherwise, you can take the following steps to build and run the file yourself.  
